@@ -5,7 +5,7 @@
 > Turn any article URL into a professional narrated explainer video with AI-generated Chinese voiceover, built with [Remotion](https://remotion.dev) + [MiniMax TTS](https://platform.minimax.io).
 
 [![Remotion](https://img.shields.io/badge/Remotion-4.x-black)](https://remotion.dev)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
 ---
 
@@ -234,4 +234,4 @@ npx remotion render src/index.ts NarrationVideo out/narration-video.mp4 --codec=
 
 ## License
 
-MIT
+Apache-2.0

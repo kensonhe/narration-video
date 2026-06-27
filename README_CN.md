@@ -5,7 +5,7 @@
 > 将任意文章 URL 转化为专业解说视频，内置 AI 中文配音，基于 [Remotion](https://remotion.dev) + [MiniMax TTS](https://platform.minimax.io) 构建。
 
 [![Remotion](https://img.shields.io/badge/Remotion-4.x-black)](https://remotion.dev)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
 ---
 
@@ -234,4 +234,4 @@ npx remotion render src/index.ts NarrationVideo out/narration-video.mp4 --codec=
 
 ## 许可证
 
-MIT
+Apache-2.0
