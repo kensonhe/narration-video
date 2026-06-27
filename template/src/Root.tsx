@@ -1,6 +1,7 @@
 import "./index.css";
 import { Composition } from "remotion";
 import { NarrationVideo } from "./Video";
+import { Cover } from "./Cover";
 import { loadFont as loadArchivoBlack } from "@remotion/google-fonts/ArchivoBlack";
 import { loadFont as loadNotoSansSC } from "@remotion/google-fonts/NotoSansSC";
 import { loadFont as loadNotoSerifSC } from "@remotion/google-fonts/NotoSerifSC";
@@ -150,27 +151,61 @@ const totalDuration = sceneFrames.reduce((sum, s) => sum + s.duration, 0);
 const subtitles = extractSubtitles();
 
 // =====================================================
+// COVER DATA (from narration.json top-level fields)
+// =====================================================
+const narr = narration as {
+  coverTitle?: string;
+  coverSubtitle?: string;
+  coverTag?: string;
+  coverImage?: string | null;
+};
+const coverTitle = narr.coverTitle || "解说视频";
+const coverSubtitle = narr.coverSubtitle || "";
+const coverTag = narr.coverTag || "";
+const coverImage = narr.coverImage || null;
+
+// =====================================================
 // COMPOSITION REGISTRATION
 // Width/height come from video.config.json orientation.
 // =====================================================
 export const RemotionRoot: React.FC = () => {
   return (
-    <Composition
-      id="NarrationVideo"
-      component={NarrationVideo as React.FC}
-      durationInFrames={totalDuration}
-      fps={FPS}
-      width={WIDTH}
-      height={HEIGHT}
-      defaultProps={{
-        sceneFrames,
-        fontDisplay,
-        fontBody,
-        fontMono,
-        subtitles,
-        templateId: theme.id,
-        orientation,
-      }}
-    />
+    <>
+      <Composition
+        id="NarrationVideo"
+        component={NarrationVideo as React.FC}
+        durationInFrames={totalDuration}
+        fps={FPS}
+        width={WIDTH}
+        height={HEIGHT}
+        defaultProps={{
+          sceneFrames,
+          fontDisplay,
+          fontBody,
+          fontMono,
+          subtitles,
+          templateId: theme.id,
+          orientation,
+        }}
+      />
+      <Composition
+        id="Cover"
+        component={Cover as React.FC}
+        durationInFrames={1}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        defaultProps={{
+          title: coverTitle,
+          subtitle: coverSubtitle,
+          tag: coverTag,
+          fontDisplay,
+          fontBody,
+          fontMono,
+          coverImage,
+          templateId: theme.id,
+        }}
+      />
+    </>
   );
 };

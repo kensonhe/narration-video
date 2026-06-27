@@ -24,6 +24,7 @@ Article URL → Narration Script → TTS Audio → Animated Scenes → MP4 Video
 
 - **Full Pipeline** — Fetch article, write narration, generate voiceover, build animated scenes, render MP4, all in one conversation
 - **Article Image Extraction** — Automatically extracts and downloads images from the source article for use in video scenes
+- **Cover Generation** — Renders a professional 1920×1080 thumbnail image alongside the video, with themed styling and article hero image support
 - **6 Visual Themes** — Clean Light (minimal), Editorial (warm serif), Aurora Night (dark tech), Neubrutalist (bold Gen Z), Zen Garden (natural calm), Retro Sunset (vaporwave vibes)
 - **5 AI Voices** — Warm male, authoritative male, warm female, news anchor, documentary narrator
 - **Flexible Duration** — From 1-minute quick glances to 5-minute deep dives
@@ -73,7 +74,7 @@ Then the pipeline runs automatically through 6 phases.
 | **2. Write Narration** | Generate scene-by-scene narration scripts in Chinese, map article images to scenes |
 | **3. Set Up Project** | Initialize a Remotion project with templates and components, download images |
 | **4. Generate Audio** | Call MiniMax TTS API to produce MP3 audio per scene + auto subtitles |
-| **5. Render Video** | Build animated React scenes and render to MP4 via Remotion |
+| **5. Render Video** | Build animated React scenes, render to MP4, and generate cover thumbnail |
 | **6. Deliver** | Report output, open video, offer adjustments |
 
 ## Visual Themes
@@ -125,12 +126,14 @@ After the skill sets up a video project, the directory looks like:
 │   ├── index.css              # CSS reset
 │   ├── Root.tsx               # Composition root (reads config for orientation + theme)
 │   ├── Video.tsx              # Scene orchestrator with ThemeProvider
+│   ├── Cover.tsx              # Cover/thumbnail composition (single frame)
 │   ├── components/
 │   │   ├── SharedComponents.tsx  # Theme-aware UI components
 │   │   └── themes.ts            # 6 visual template definitions
 │   └── scenes/                # One React component per scene
 └── out/
-    └── narration-video.mp4    # Final rendered video
+    ├── narration-video.mp4    # Final rendered video
+    └── cover.png              # Cover/thumbnail image
 ```
 
 ## Scene Authoring
@@ -195,6 +198,12 @@ Render to MP4:
 
 ```bash
 npx remotion render src/index.ts NarrationVideo out/narration-video.mp4 --codec=h264 --crf=18
+```
+
+Render the cover image:
+
+```bash
+npx remotion still src/index.ts Cover out/cover.png
 ```
 
 If you run out of memory:

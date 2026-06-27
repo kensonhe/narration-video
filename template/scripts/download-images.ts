@@ -33,6 +33,8 @@ interface NarrationScene {
 
 interface NarrationData {
   scenes: NarrationScene[];
+  coverImageUrl?: string | null;
+  coverImage?: string | null;
 }
 
 // =====================================================
@@ -172,20 +174,25 @@ async function main() {
     (s) => s.imageUrl && s.imageUrl.trim().length > 0
   );
 
-  if (scenesWithImages.length === 0) {
-    console.log("ℹ️  No scenes have imageUrl — nothing to download");
+  const hasCoverImage =
+    narration.coverImageUrl && narration.coverImageUrl.trim().length > 0;
+
+  if (scenesWithImages.length === 0 && !hasCoverImage) {
+    console.log("ℹ️  No images to download — nothing to do");
     return;
   }
-
-  console.log(
-    `Found ${scenesWithImages.length} scene(s) with images to download\n`
-  );
 
   let downloaded = 0;
   let skipped = 0;
   let failed = 0;
 
-  for (const scene of scenesWithImages) {
+  // --- Scene images ---
+  if (scenesWithImages.length > 0) {
+    console.log(
+      `Found ${scenesWithImages.length} scene(s) with images to download\n`
+    );
+
+    for (const scene of scenesWithImages) {
     const ext = guessExtension(scene.imageUrl!);
     const filename = `${scene.id}${ext}`;
     const destPath = path.join(IMAGES_DIR, filename);
@@ -217,6 +224,35 @@ async function main() {
 
     // Small delay between downloads to be polite
     await new Promise((r) => setTimeout(r, 300));
+  }
+  } // end scene images block
+
+  // --- Cover image ---
+  if (hasCoverImage) {
+    const coverExt = guessExtension(narration.coverImageUrl!);
+    const coverFilename = `cover${coverExt}`;
+    const coverDestPath = path.join(IMAGES_DIR, coverFilename);
+    const coverRelativePath = `images/${coverFilename}`;
+
+    if (fs.existsSync(coverDestPath)) {
+      console.log(`  ⏭  cover: already exists (${coverFilename})`);
+      narration.coverImage = coverRelativePath;
+      skipped++;
+    } else {
+      process.stdout.write(`  ⬇  cover: downloading... `);
+      const coverResult = await downloadFile(narration.coverImageUrl!, coverDestPath);
+      if (coverResult.ok) {
+        const stat = fs.statSync(coverDestPath);
+        const sizeKb = Math.round(stat.size / 1024);
+        console.log(`✅ ${coverFilename} (${sizeKb} KB)`);
+        narration.coverImage = coverRelativePath;
+        downloaded++;
+      } else {
+        console.log(`❌ ${coverResult.error}`);
+        narration.coverImage = null;
+        failed++;
+      }
+    }
   }
 
   // Write updated narration.json back

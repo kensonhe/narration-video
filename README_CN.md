@@ -24,6 +24,7 @@
 
 - **全流程自动化** — 抓取文章、撰写文案、生成配音、构建动画场景、渲染视频，一次对话完成
 - **文章图片提取** — 自动从源文章中提取并下载图片，用于视频场景中的视觉表达
+- **封面生成** — 随视频一起渲染 1920×1080 专业封面图，支持主题样式和文章主图
 - **6 套视觉主题** — 简约亮色（高级感）、杂志衬线（人文感）、极光暗夜（科技感）、新粗暴主义（Gen Z 潮流）、禅意花园（自然舒适）、复古日落（怀旧风）
 - **5 种 AI 配音** — 温暖男声、商务男声、温暖女声、新闻女主播、纪录片解说
 - **灵活时长** — 从 1 分钟速览到 5 分钟深度解读
@@ -73,7 +74,7 @@
 | **2. 撰写文案** | 生成中文逐场景解说脚本，将文章图片映射到场景 |
 | **3. 搭建项目** | 初始化 Remotion 项目，配置模板和组件，下载图片 |
 | **4. 生成音频** | 调用 MiniMax TTS API 生成每个场景的 MP3 音频 + 自动字幕 |
-| **5. 渲染视频** | 构建 React 动画场景并通过 Remotion 渲染为 MP4 |
+| **5. 渲染视频** | 构建 React 动画场景，渲染为 MP4，生成封面图 |
 | **6. 交付视频** | 报告输出、打开视频、提供调整选项 |
 
 ## 视觉主题
@@ -125,12 +126,14 @@
 │   ├── index.css              # CSS 重置
 │   ├── Root.tsx               # 组合根（读取配置的方向和主题）
 │   ├── Video.tsx              # 场景编排器，带 ThemeProvider
+│   ├── Cover.tsx              # 封面/缩略图组合（单帧）
 │   ├── components/
 │   │   ├── SharedComponents.tsx  # 主题感知的 UI 组件
 │   │   └── themes.ts            # 6 套视觉模板定义
 │   └── scenes/                # 每个场景一个 React 组件
 └── out/
-    └── narration-video.mp4    # 最终渲染的视频
+    ├── narration-video.mp4    # 最终渲染的视频
+    └── cover.png              # 封面/缩略图
 ```
 
 ## 场景开发
@@ -195,6 +198,12 @@ npm run dev
 
 ```bash
 npx remotion render src/index.ts NarrationVideo out/narration-video.mp4 --codec=h264 --crf=18
+```
+
+渲染封面图：
+
+```bash
+npx remotion still src/index.ts Cover out/cover.png
 ```
 
 内存不足时：

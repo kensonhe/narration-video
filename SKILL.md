@@ -137,6 +137,11 @@ Create a `narration.json` file with this structure:
 
 ```json
 {
+  "coverTitle": "3-12字吸睛标题",
+  "coverSubtitle": "一句话概括视频内容",
+  "coverTag": "科技",
+  "coverImageUrl": "https://example.com/hero-image.jpg",
+  "coverImage": null,
   "scenes": [
     {
       "id": "scene01",
@@ -151,7 +156,18 @@ Create a `narration.json` file with this structure:
 }
 ```
 
-The `audioDuration` and `subtitles` fields are auto-filled by the `generate-audio.ts` script after TTS generation. The `image` field is auto-filled by the `download-images.ts` script. You only need to write `id`, `title`, `text`, and optionally `imageUrl`.
+The `audioDuration` and `subtitles` fields are auto-filled by the `generate-audio.ts` script after TTS generation. The `image` and `coverImage` fields are auto-filled by the `download-images.ts` script. You only need to write `id`, `title`, `text`, `imageUrl`, and the cover fields.
+
+### Cover fields
+
+The cover is a 1920×1080 thumbnail image rendered alongside the video. It needs to be
+eye-catching and summarize the video at a glance.
+
+- **`coverTitle`** (required) — A punchy, short title (3–12 Chinese characters). Think YouTube thumbnail text: bold, curiosity-provoking, impossible to ignore. Examples: "代码的真相", "AI 要取代谁？", "被忽略的巨头"
+- **`coverSubtitle`** (optional) — One sentence providing context (15–30 characters). Explains what the video is about without duplicating the title
+- **`coverTag`** (optional) — A short category label (2–4 characters) like "科技", "财经", "人文", "深度"
+- **`coverImageUrl`** (optional) — The most visually striking image from the article. Pick the one that would make someone stop scrolling. If omitted, the cover uses only the themed background
+- **`coverImage`** — Set to `null`; filled by `download-images.ts`
 
 ### Image-to-scene mapping
 
@@ -359,14 +375,18 @@ Use `MINIMAX_API_BASE="https://api.minimaxi.com/v1"` (note the extra 'i' in mini
 
 ---
 
-## Phase 5: Render Video
+## Phase 5: Render Video + Cover
 
 ```bash
 cd <project-dir>
+# Render the video
 npx remotion render src/index.ts NarrationVideo out/narration-video.mp4 --codec=h264 --crf=18
+# Render the cover image
+npx remotion still src/index.ts Cover out/cover.png
 ```
 
-Rendering takes 3-8 minutes depending on machine specs (8332 frames for a ~4.5 min video at 30fps).
+Video rendering takes 3-8 minutes depending on machine specs (8332 frames for a ~4.5 min video at 30fps).
+Cover image rendering is near-instant (single frame).
 
 ### Preview first (optional)
 
@@ -381,10 +401,11 @@ Opens Remotion Studio at `http://localhost:3000`. Use it to scrub through scenes
 
 ## Phase 6: Deliver
 
-1. Tell the user the output file path and size
+1. Tell the user the output file paths and sizes (video + cover)
 2. Open the video: `open <output-path>`
-3. Summarize: resolution, duration, number of scenes, voice used
-4. Offer to adjust: narration text, voice, visual style, or re-render
+3. Open the cover: `open out/cover.png`
+4. Summarize: resolution, duration, number of scenes, voice used
+5. Offer to adjust: narration text, voice, visual style, cover title, or re-render
 
 ---
 
@@ -416,6 +437,7 @@ Opens Remotion Studio at `http://localhost:3000`. Use it to scrub through scenes
 │   ├── index.ts              # registerRoot entry
 │   ├── Root.tsx              # Composition with dynamic duration
 │   ├── Video.tsx             # Sequence orchestration + Audio
+│   ├── Cover.tsx             # Cover/thumbnail composition (single frame)
 │   ├── scenes/               # One component per scene
 │   │   ├── Scene01Xxx.tsx
 │   │   └── ...
@@ -428,9 +450,12 @@ Opens Remotion Studio at `http://localhost:3000`. Use it to scrub through scenes
 ├── scripts/
 │   ├── generate-audio.ts     # MiniMax TTS script (reads voice from config)
 │   └── download-images.ts    # Article image downloader (reads imageUrl from narration.json)
-├── narration.json            # Narration text + durations + image paths
+├── narration.json            # Narration text + durations + image paths + cover data
 ├── video.config.json         # orientation / template / voice / duration
 ├── remotion.config.ts
 ├── tsconfig.json
-└── package.json
+├── package.json
+└── out/
+    ├── narration-video.mp4   # Final rendered video
+    └── cover.png             # Cover/thumbnail image
 ```
