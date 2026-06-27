@@ -38,10 +38,12 @@ then write the answers into a `video.config.json` file (created in Phase 3).
    - `landscape` — 横屏 1920×1080 (default, for B站/YouTube/桌面)
    - `portrait` — 竖屏 1080×1920 (for 抖音/小红书/手机)
 3. **Template** — Which visual style?
-   - `bold-signal` — 深色霓虹 (科技/硬核解说, default)
-   - `clean-light` — 极简浅色 (知识/财经/高级感)
+   - `clean-light` — 极简浅色 (知识/财经/高级感, default)
    - `editorial` — 杂志风暖纸 (人文/深度/故事)
-   - `vivid-gradient` — 渐变活力 (抖音/小红书/年轻)
+   - `aurora-night` — 极光暗夜 (科技/科学/未来感)
+   - `neubrutalist` — 新粗暴主义 (Gen Z/潮流/病毒式)
+   - `zen-garden` — 禅意花园 (生活/健康/文化)
+   - `retro-sunset` — 复古日落 (创意/怀旧/音乐)
 4. **Voice** — Which narrator voice?
    - `audiobook_male_1` — 有声书男声 (default, warm narration)
    - `male-qn-jingying` — 精英青年男声 (authoritative/business)
@@ -62,7 +64,7 @@ Store the answers — they become `video.config.json`:
 ```json
 {
   "orientation": "landscape",
-  "template": "bold-signal",
+  "template": "clean-light",
   "voice": { "voiceId": "audiobook_male_1", "speed": 1.0, "pitch": 0 },
   "duration": "standard"
 }
@@ -168,7 +170,7 @@ Place the `narration.json` from Phase 2 into the project root.
 ### 3d. Copy shared components
 
 The setup script copies `SharedComponents.tsx` and `themes.ts` from
-`<skill-path>/template/src/components/` into the project. `themes.ts` defines the 4 selectable
+`<skill-path>/template/src/components/` into the project. `themes.ts` defines the 6 selectable
 templates; `SharedComponents.tsx` provides theme-aware building blocks (BoldCard, DarkCard,
 GlassCard, AnimatedText, Background, etc.) that **read colors and fonts from the active theme via
 `useTheme()`** — so the same scene code looks correct under any template.
@@ -356,7 +358,7 @@ Opens Remotion Studio at `http://localhost:3000`. Use it to scrub through scenes
 │   │   └── ...
 │   └── components/
 │       ├── SharedComponents.tsx  # Theme-aware BoldCard, DarkCard, etc.
-│       └── themes.ts             # 4 template definitions + useTheme source
+│       └── themes.ts             # 6 template definitions + useTheme source
 ├── public/audio/             # Generated mp3 files
 ├── scripts/
 │   └── generate-audio.ts     # MiniMax TTS script (reads voice from config)

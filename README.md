@@ -23,7 +23,7 @@ Article URL → Narration Script → TTS Audio → Animated Scenes → MP4 Video
 ## Features
 
 - **Full Pipeline** — Fetch article, write narration, generate voiceover, build animated scenes, render MP4, all in one conversation
-- **4 Visual Themes** — Bold Signal (dark neon), Clean Light (minimal), Editorial (warm serif), Vivid Gradient (vibrant)
+- **6 Visual Themes** — Clean Light (minimal), Editorial (warm serif), Aurora Night (dark tech), Neubrutalist (bold Gen Z), Zen Garden (natural calm), Retro Sunset (vaporwave vibes)
 - **5 AI Voices** — Warm male, authoritative male, warm female, news anchor, documentary narrator
 - **Flexible Duration** — From 1-minute quick glances to 5-minute deep dives
 - **Orientation Support** — Landscape (1920×1080) for YouTube/desktop or portrait (1080×1920) for TikTok/Xiaohongshu/Reels
@@ -57,7 +57,7 @@ The skill will guide you through a quick setup:
 
 1. **API Key** — Your MiniMax API key
 2. **Orientation** — Landscape or portrait
-3. **Visual Theme** — Pick from 4 styles
+3. **Visual Theme** — Pick from 6 styles
 4. **Voice** — Pick from 5 Chinese narrator voices
 5. **Duration** — Quick glance, standard, deep dive, or auto
 
@@ -79,10 +79,12 @@ Then the pipeline runs automatically through 6 phases.
 
 | Theme | Mode | Style | Best For |
 |-------|------|-------|----------|
-| **Bold Signal** | Dark | Neon orange glow, glass cards | Tech, hardcore content |
 | **Clean Light** | Light | Minimal blue accents, solid cards | Knowledge, finance, premium |
 | **Editorial** | Light | Warm serif, paper cards | Humanities, storytelling |
-| **Vivid Gradient** | Vibrant | Purple-pink gradient, glass cards | TikTok, Xiaohongshu, youth |
+| **Aurora Night** | Dark | Cyan-purple aurora glow, glass cards | Tech, science, futuristic |
+| **Neubrutalist** | Vibrant | Bold hard shadows, bright yellow/red | Gen Z, viral, trendy |
+| **Zen Garden** | Light | Sage green, organic natural feel | Lifestyle, wellness, culture |
+| **Retro Sunset** | Dark | Vaporwave sunset gradient, glass cards | Creative, nostalgia, music |
 
 ## Voices
 
@@ -121,7 +123,7 @@ After the skill sets up a video project, the directory looks like:
 │   ├── Video.tsx              # Scene orchestrator with ThemeProvider
 │   ├── components/
 │   │   ├── SharedComponents.tsx  # Theme-aware UI components
-│   │   └── themes.ts            # 4 visual template definitions
+│   │   └── themes.ts            # 6 visual template definitions
 │   └── scenes/                # One React component per scene
 └── out/
     └── narration-video.mp4    # Final rendered video
@@ -159,7 +161,7 @@ The single source of truth for the entire pipeline:
 ```json
 {
   "orientation": "landscape",
-  "template": "bold-signal",
+  "template": "clean-light",
   "voice": {
     "voiceId": "audiobook_male_1",
     "speed": 1.0,
@@ -203,7 +205,7 @@ npx remotion render src/index.ts NarrationVideo out/narration-video.mp4 --codec=
 - **Audio padding**: 1.5s before speech starts (visual intro), 0.8s after speech ends (visual hold)
 - **TTS model**: MiniMax `speech-2.8-hd` (highest quality)
 - **Subtitle generation**: Automatic — splits text by Chinese punctuation, distributes segments evenly across audio duration
-- **Font loading**: Google Fonts via `@remotion/google-fonts` (ArchivoBlack, NotoSansSC, NotoSerifSC, SpaceGrotesk)
+- **Font loading**: Google Fonts via `@remotion/google-fonts` (ArchivoBlack, NotoSansSC, NotoSerifSC, SpaceGrotesk, PlayfairDisplay, BebasNeue, RussoOne, JetBrainsMono)
 
 ## Troubleshooting
 

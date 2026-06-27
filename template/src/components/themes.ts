@@ -1,25 +1,41 @@
 /* ===========================================
    THEME SYSTEM
-   4 selectable visual templates. The active theme is chosen in
+   6 selectable visual templates. The active theme is chosen in
    video.config.json (`template` field) and provided to all scenes via
    <ThemeProvider> in Video.tsx — components read it with useTheme().
 
    Templates:
-   - bold-signal     dark + orange neon glow (科技/硬核解说)
    - clean-light     near-white minimal, thin accents (知识/财经/高级感)
    - editorial       warm paper, big serif (人文/深度/故事)
-   - vivid-gradient  bright animated gradient, rounded bold (抖音/小红书/年轻)
+   - aurora-night    aurora borealis glow, flowing gradients (科技/科学/未来)
+   - neubrutalist    bold hard shadows, bright blocks (Gen Z/潮流/病毒式)
+   - zen-garden      organic biophilic, natural calm (生活/健康/文化)
+   - retro-sunset    vaporwave sunset, retro vibes (创意/怀旧/音乐)
    =========================================== */
 
-export type TemplateId = "bold-signal" | "clean-light" | "editorial" | "vivid-gradient";
+export type TemplateId =
+  | "clean-light"
+  | "editorial"
+  | "aurora-night"
+  | "neubrutalist"
+  | "zen-garden"
+  | "retro-sunset";
 
 /** Which loaded Google font family drives each text role. Root.tsx maps these
  *  keys to actual loaded font families and passes them to scenes as
  *  fontDisplay / fontBody / fontMono. */
-export type FontRole = "archivoBlack" | "notoSansSC" | "notoSerifSC" | "spaceGrotesk";
+export type FontRole =
+  | "archivoBlack"
+  | "notoSansSC"
+  | "notoSerifSC"
+  | "spaceGrotesk"
+  | "playfairDisplay"
+  | "bebasNeue"
+  | "russoOne"
+  | "jetBrainsMono";
 
 export type ThemeMode = "dark" | "light" | "vibrant";
-export type CardStyle = "solid" | "glass" | "paper";
+export type CardStyle = "solid" | "glass" | "paper" | "brutal";
 
 export interface Theme {
   id: TemplateId;
@@ -66,38 +82,6 @@ export interface Theme {
 }
 
 export const THEMES: Record<TemplateId, Theme> = {
-  /* ---------- Bold Signal (current dark neon look) ---------- */
-  "bold-signal": {
-    id: "bold-signal",
-    mode: "dark",
-    bg: {
-      base: "#0d0d0d",
-      gradient: "linear-gradient(135deg, #0d0d0d 0%, #1a1a2e 40%, #16213e 70%, #0d0d0d 100%)",
-      meshColors: ["rgba(255,87,34,0.4)", "rgba(33,150,243,0.35)", "rgba(156,39,176,0.3)"],
-      particleColor: "rgba(255,87,34,0.12)",
-      gridOpacity: 0.015,
-    },
-    colors: {
-      accent: "#FF5722",
-      accent2: "#E91E63",
-      accent3: "#2196F3",
-      glow: "rgba(255,87,34,0.4)",
-      textPrimary: "#ffffff",
-      textSecondary: "#a0a0b0",
-      textMuted: "#555566",
-      textOnCard: "#0d0d0d",
-      cardBg: "rgba(30,30,50,0.7)",
-      cardBorder: "rgba(255,255,255,0.06)",
-    },
-    card: { radius: 28, style: "glass" },
-    fonts: { display: "archivoBlack", body: "notoSansSC", mono: "spaceGrotesk" },
-    subtitle: {
-      bg: "rgba(0,0,0,0.65)",
-      text: "#ffffff",
-      border: "1px solid rgba(255,87,34,0.15)",
-    },
-  },
-
   /* ---------- Clean Light (minimal, near-white) ---------- */
   "clean-light": {
     id: "clean-light",
@@ -154,7 +138,7 @@ export const THEMES: Record<TemplateId, Theme> = {
       cardBorder: "rgba(120,90,55,0.18)",
     },
     card: { radius: 6, style: "paper" },
-    fonts: { display: "notoSerifSC", body: "notoSansSC", mono: "spaceGrotesk" },
+    fonts: { display: "playfairDisplay", body: "notoSerifSC", mono: "spaceGrotesk" },
     subtitle: {
       bg: "rgba(36,29,21,0.80)",
       text: "#faf5ec",
@@ -162,40 +146,154 @@ export const THEMES: Record<TemplateId, Theme> = {
     },
   },
 
-  /* ---------- Vivid Gradient (bright, playful, rounded) ---------- */
-  "vivid-gradient": {
-    id: "vivid-gradient",
+  /* ---------- Aurora Night (flowing aurora borealis, dark tech) ---------- */
+  "aurora-night": {
+    id: "aurora-night",
+    mode: "dark",
+    bg: {
+      base: "#060613",
+      gradient:
+        "linear-gradient(135deg, #060613 0%, #0a1628 30%, #0d1f3c 55%, #0a1a2e 80%, #060613 100%)",
+      meshColors: [
+        "rgba(34,211,238,0.30)",
+        "rgba(139,92,246,0.28)",
+        "rgba(16,185,129,0.22)",
+      ],
+      particleColor: "rgba(34,211,238,0.10)",
+      gridOpacity: 0.01,
+    },
+    colors: {
+      accent: "#22D3EE",
+      accent2: "#8B5CF6",
+      accent3: "#10B981",
+      glow: "rgba(34,211,238,0.40)",
+      textPrimary: "#f0f4ff",
+      textSecondary: "#8899bb",
+      textMuted: "#445577",
+      textOnCard: "#060613",
+      cardBg: "rgba(12,20,40,0.72)",
+      cardBorder: "rgba(34,211,238,0.10)",
+    },
+    card: { radius: 22, style: "glass" },
+    fonts: { display: "spaceGrotesk", body: "notoSansSC", mono: "jetBrainsMono" },
+    subtitle: {
+      bg: "rgba(6,6,19,0.72)",
+      text: "#f0f4ff",
+      border: "1px solid rgba(34,211,238,0.18)",
+    },
+  },
+
+  /* ---------- Neubrutalist (hard shadows, bold blocks, Gen Z) ---------- */
+  neubrutalist: {
+    id: "neubrutalist",
     mode: "vibrant",
     bg: {
-      base: "#5b2bd6",
-      gradient: "linear-gradient(135deg, #7C3AED 0%, #DB2777 45%, #F59E0B 100%)",
-      meshColors: ["rgba(255,255,255,0.25)", "rgba(124,58,237,0.35)", "rgba(236,72,153,0.3)"],
-      particleColor: "rgba(255,255,255,0.30)",
+      base: "#FFEB3B",
+      gradient:
+        "linear-gradient(145deg, #FFEB3B 0%, #FFD600 45%, #FFC107 100%)",
+      meshColors: [
+        "rgba(255,82,82,0.12)",
+        "rgba(33,150,243,0.10)",
+      ],
+      particleColor: "none",
       gridOpacity: 0,
     },
     colors: {
-      accent: "#ffffff",
-      accent2: "#FDE68A",
-      accent3: "#A7F3D0",
-      glow: "rgba(255,255,255,0.45)",
-      textPrimary: "#ffffff",
-      textSecondary: "rgba(255,255,255,0.85)",
-      textMuted: "rgba(255,255,255,0.55)",
-      textOnCard: "#5b2bd6",
-      cardBg: "rgba(255,255,255,0.16)",
-      cardBorder: "rgba(255,255,255,0.35)",
+      accent: "#FF5252",
+      accent2: "#2196F3",
+      accent3: "#000000",
+      glow: "rgba(0,0,0,0.12)",
+      textPrimary: "#1a1a1a",
+      textSecondary: "#333333",
+      textMuted: "#666666",
+      textOnCard: "#ffffff",
+      cardBg: "#ffffff",
+      cardBorder: "#000000",
     },
-    card: { radius: 32, style: "glass" },
-    fonts: { display: "archivoBlack", body: "notoSansSC", mono: "spaceGrotesk" },
+    card: { radius: 4, style: "brutal" },
+    fonts: { display: "russoOne", body: "notoSansSC", mono: "spaceGrotesk" },
     subtitle: {
-      bg: "rgba(45,16,90,0.62)",
-      text: "#ffffff",
-      border: "1px solid rgba(255,255,255,0.30)",
+      bg: "rgba(0,0,0,0.88)",
+      text: "#FFEB3B",
+      border: "2px solid #FF5252",
+    },
+  },
+
+  /* ---------- Zen Garden (organic biophilic, natural calm) ---------- */
+  "zen-garden": {
+    id: "zen-garden",
+    mode: "light",
+    bg: {
+      base: "#f5f5f0",
+      gradient:
+        "linear-gradient(170deg, #fafaf5 0%, #f0f0e8 40%, #e8e8df 100%)",
+      meshColors: [
+        "rgba(74,124,89,0.07)",
+        "rgba(139,160,122,0.05)",
+      ],
+      particleColor: "none",
+      gridOpacity: 0,
+    },
+    colors: {
+      accent: "#4A7C59",
+      accent2: "#2D372C",
+      accent3: "#8BA07A",
+      glow: "rgba(74,124,89,0.18)",
+      textPrimary: "#2D372C",
+      textSecondary: "#556B55",
+      textMuted: "#8FA08F",
+      textOnCard: "#fafaf5",
+      cardBg: "rgba(255,255,252,0.92)",
+      cardBorder: "rgba(74,124,89,0.12)",
+    },
+    card: { radius: 14, style: "solid" },
+    fonts: { display: "notoSerifSC", body: "notoSansSC", mono: "spaceGrotesk" },
+    subtitle: {
+      bg: "rgba(45,55,44,0.82)",
+      text: "#f5f5f0",
+      border: "1px solid rgba(74,124,89,0.25)",
+    },
+  },
+
+  /* ---------- Retro Sunset (vaporwave sunset, retro vibes) ---------- */
+  "retro-sunset": {
+    id: "retro-sunset",
+    mode: "dark",
+    bg: {
+      base: "#1a0a2e",
+      gradient:
+        "linear-gradient(180deg, #1a0a2e 0%, #2d1458 28%, #5c1a5e 52%, #a83279 76%, #e8655a 100%)",
+      meshColors: [
+        "rgba(255,107,107,0.25)",
+        "rgba(168,50,121,0.22)",
+        "rgba(92,26,94,0.18)",
+      ],
+      particleColor: "rgba(255,180,120,0.08)",
+      gridOpacity: 0.012,
+    },
+    colors: {
+      accent: "#FF6B6B",
+      accent2: "#FFD93D",
+      accent3: "#C084FC",
+      glow: "rgba(255,107,107,0.40)",
+      textPrimary: "#fff0f0",
+      textSecondary: "#dda0a0",
+      textMuted: "#885566",
+      textOnCard: "#1a0a2e",
+      cardBg: "rgba(45,20,88,0.70)",
+      cardBorder: "rgba(255,107,107,0.12)",
+    },
+    card: { radius: 24, style: "glass" },
+    fonts: { display: "bebasNeue", body: "notoSansSC", mono: "spaceGrotesk" },
+    subtitle: {
+      bg: "rgba(26,10,46,0.75)",
+      text: "#fff0f0",
+      border: "1px solid rgba(255,107,107,0.22)",
     },
   },
 };
 
-export const DEFAULT_TEMPLATE: TemplateId = "bold-signal";
+export const DEFAULT_TEMPLATE: TemplateId = "clean-light";
 
 export function getTheme(id?: string): Theme {
   return THEMES[(id as TemplateId)] ?? THEMES[DEFAULT_TEMPLATE];

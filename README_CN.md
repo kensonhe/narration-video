@@ -23,7 +23,7 @@
 ## 核心特性
 
 - **全流程自动化** — 抓取文章、撰写文案、生成配音、构建动画场景、渲染视频，一次对话完成
-- **4 套视觉主题** — 深色霓虹（科技感）、简约亮色（高级感）、暖色衬线（人文感）、活力渐变（年轻化）
+- **6 套视觉主题** — 简约亮色（高级感）、杂志衬线（人文感）、极光暗夜（科技感）、新粗暴主义（Gen Z 潮流）、禅意花园（自然舒适）、复古日落（怀旧风）
 - **5 种 AI 配音** — 温暖男声、商务男声、温暖女声、新闻女主播、纪录片解说
 - **灵活时长** — 从 1 分钟速览到 5 分钟深度解读
 - **横竖屏支持** — 横屏（1920×1080）适合 YouTube/桌面端，竖屏（1080×1920）适合抖音/小红书/快手
@@ -57,7 +57,7 @@
 
 1. **API Key** — 输入 MiniMax API Key
 2. **视频方向** — 横屏或竖屏
-3. **视觉主题** — 从 4 种风格中选择
+3. **视觉主题** — 从 6 种风格中选择
 4. **配音声音** — 从 5 种中文配音中选择
 5. **视频时长** — 速览、标准、深度、或自动
 
@@ -79,10 +79,12 @@
 
 | 主题 | 模式 | 风格 | 适用场景 |
 |------|------|------|----------|
-| **Bold Signal** | 深色 | 霓虹橙光效、玻璃卡片 | 科技、硬核内容 |
 | **Clean Light** | 亮色 | 简约蓝色点缀、实心卡片 | 知识、金融、高端 |
 | **Editorial** | 亮色 | 暖色衬线体、纸质卡片 | 人文、故事、深度 |
-| **Vivid Gradient** | 鲜艳 | 紫粉渐变、玻璃卡片 | 抖音、小红书、年轻用户 |
+| **Aurora Night** | 深色 | 青紫极光光效、玻璃卡片 | 科技、科学、未来感 |
+| **Neubrutalist** | 鲜艳 | 硬阴影、明黄红色块 | Gen Z、潮流、病毒式 |
+| **Zen Garden** | 亮色 | 鼠尾草绿、有机自然感 | 生活、健康、文化 |
+| **Retro Sunset** | 深色 | 蒸汽波日落渐变、玻璃卡片 | 创意、怀旧、音乐 |
 
 ## 配音声音
 
@@ -121,7 +123,7 @@
 │   ├── Video.tsx              # 场景编排器，带 ThemeProvider
 │   ├── components/
 │   │   ├── SharedComponents.tsx  # 主题感知的 UI 组件
-│   │   └── themes.ts            # 4 套视觉模板定义
+│   │   └── themes.ts            # 6 套视觉模板定义
 │   └── scenes/                # 每个场景一个 React 组件
 └── out/
     └── narration-video.mp4    # 最终渲染的视频
@@ -159,7 +161,7 @@ interface SceneProps {
 ```json
 {
   "orientation": "landscape",
-  "template": "bold-signal",
+  "template": "clean-light",
   "voice": {
     "voiceId": "audiobook_male_1",
     "speed": 1.0,
@@ -203,7 +205,7 @@ npx remotion render src/index.ts NarrationVideo out/narration-video.mp4 --codec=
 - **音频延迟**：语音开始前 1.5 秒（视觉引入），语音结束后 0.8 秒（视觉保持）
 - **TTS 模型**：MiniMax `speech-2.8-hd`（最高质量）
 - **字幕生成**：自动 — 按中文标点分句，将片段均匀分布在音频时长内
-- **字体加载**：通过 `@remotion/google-fonts` 加载 Google Fonts（ArchivoBlack、NotoSansSC、NotoSerifSC、SpaceGrotesk）
+- **字体加载**：通过 `@remotion/google-fonts` 加载 Google Fonts（ArchivoBlack、NotoSansSC、NotoSerifSC、SpaceGrotesk、PlayfairDisplay、BebasNeue、RussoOne、JetBrainsMono）
 
 ## 常见问题
 

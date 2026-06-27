@@ -6,7 +6,7 @@ import { Theme, getTheme, DEFAULT_TEMPLATE } from "./themes";
    THEME CONTEXT
    Video.tsx wraps all scenes in <ThemeProvider theme={...}>.
    Components read colors/fonts via useTheme() so the same scene code
-   works across all 4 templates without edits.
+   works across all 6 templates without edits.
    =========================================== */
 const ThemeContext = React.createContext<Theme>(getTheme(DEFAULT_TEMPLATE));
 
@@ -295,6 +295,7 @@ export const GlassCard: React.FC<{
   const border = borderColor ?? theme.colors.cardBorder;
   const isPaper = theme.card.style === "paper";
   const isSolid = theme.card.style === "solid";
+  const isBrutal = theme.card.style === "brutal";
 
   return (
     <div style={{
@@ -302,10 +303,12 @@ export const GlassCard: React.FC<{
       backdropFilter: theme.card.style === "glass" ? "blur(20px)" : undefined,
       borderRadius: theme.card.radius,
       padding: "36px 44px",
-      border: `1px solid ${border}`,
+      border: isBrutal ? `3px solid ${theme.colors.cardBorder}` : `1px solid ${border}`,
       transform: `translateY(${translateY}px)`,
       opacity,
-      boxShadow: isPaper
+      boxShadow: isBrutal
+        ? `6px 6px 0 ${theme.colors.accent3}`
+        : isPaper
         ? `0 2px 0 ${border}, 0 18px 40px rgba(60,40,20,0.12)`
         : isSolid
         ? `0 12px 30px rgba(15,23,42,0.08)`

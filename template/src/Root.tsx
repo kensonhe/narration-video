@@ -5,6 +5,10 @@ import { loadFont as loadArchivoBlack } from "@remotion/google-fonts/ArchivoBlac
 import { loadFont as loadNotoSansSC } from "@remotion/google-fonts/NotoSansSC";
 import { loadFont as loadNotoSerifSC } from "@remotion/google-fonts/NotoSerifSC";
 import { loadFont as loadSpaceGrotesk } from "@remotion/google-fonts/SpaceGrotesk";
+import { loadFont as loadPlayfairDisplay } from "@remotion/google-fonts/PlayfairDisplay";
+import { loadFont as loadBebasNeue } from "@remotion/google-fonts/BebasNeue";
+import { loadFont as loadRussoOne } from "@remotion/google-fonts/RussoOne";
+import { loadFont as loadJetBrainsMono } from "@remotion/google-fonts/JetBrainsMono";
 import narration from "../narration.json";
 import config from "../video.config.json";
 import { getTheme, type FontRole } from "./components/themes";
@@ -37,12 +41,26 @@ const spaceGrotesk = loadSpaceGrotesk("normal", {
   weights: ["400", "500", "700"],
   subsets: ["latin"],
 });
+const playfairDisplay = loadPlayfairDisplay("normal", {
+  weights: ["400", "700", "900"],
+  subsets: ["latin"],
+});
+const bebasNeue = loadBebasNeue();
+const russoOne = loadRussoOne();
+const jetBrainsMono = loadJetBrainsMono("normal", {
+  weights: ["400", "500", "700"],
+  subsets: ["latin"],
+});
 
 const FONT_FAMILIES: Record<FontRole, string> = {
   archivoBlack: archivoBlack.fontFamily,
   notoSansSC: notoSansSC.fontFamily,
   notoSerifSC: notoSerifSC.fontFamily,
   spaceGrotesk: spaceGrotesk.fontFamily,
+  playfairDisplay: playfairDisplay.fontFamily,
+  bebasNeue: bebasNeue.fontFamily,
+  russoOne: russoOne.fontFamily,
+  jetBrainsMono: jetBrainsMono.fontFamily,
 };
 
 const fontDisplay = FONT_FAMILIES[theme.fonts.display];
