@@ -102,6 +102,33 @@ Read the full article. Identify:
 Target the scene count from the duration preset (Phase 0): `glance` 4–5, `standard` 8–10,
 `deep` 12–15, `auto` based on the article. Fewer feels rushed; more feels bloated.
 
+### 1c. Extract article images
+
+While reading the article, also collect useful images. These add significant visual value to the
+video — diagrams, screenshots, photos, and charts from the article are far more compelling than
+generic shapes.
+
+**Using WebFetch:** Look for markdown image syntax `![alt text](url)` in the fetched content.
+Collect the URLs along with their alt text and the surrounding context (which section they're in).
+
+**Using Playwright:** Run `browser_evaluate` to extract image data:
+
+```javascript
+Array.from(document.querySelectorAll('img'))
+  .filter(img => img.naturalWidth > 100 && img.naturalHeight > 100)
+  .map(img => ({ src: img.src, alt: img.alt, w: img.naturalWidth, h: img.naturalHeight }))
+```
+
+**Filtering rules** — skip these images:
+- Small icons, logos, avatars (< 100px in either dimension)
+- Tracking pixels (1×1 or invisible)
+- Decorative dividers or spacers
+- Social media share buttons
+- Images with generic filenames like `spacer.gif`, `pixel.png`, `logo.svg`
+
+**Target:** Collect 5–15 candidate images. Note which article section each image belongs to — this
+helps match images to the right scenes in Phase 2.
+
 ---
 
 ## Phase 2: Write Narration Scripts
@@ -115,6 +142,8 @@ Create a `narration.json` file with this structure:
       "id": "scene01",
       "title": "开篇",
       "text": "今天我们来聊一个重要的话题：...",
+      "imageUrl": "https://example.com/article-image.jpg",
+      "image": null,
       "audioDuration": 0,
       "subtitles": null
     }
@@ -122,7 +151,18 @@ Create a `narration.json` file with this structure:
 }
 ```
 
-The `audioDuration` and `subtitles` fields are auto-filled by the `generate-audio.ts` script after TTS generation. You only need to write `id`, `title`, and `text`.
+The `audioDuration` and `subtitles` fields are auto-filled by the `generate-audio.ts` script after TTS generation. The `image` field is auto-filled by the `download-images.ts` script. You only need to write `id`, `title`, `text`, and optionally `imageUrl`.
+
+### Image-to-scene mapping
+
+The `imageUrl` field is optional — not every scene needs an image. Use images where they add
+genuine visual value (typically 30–60% of scenes). When assigning images:
+
+- **Match by content**: an image near a paragraph in the article → the scene about that paragraph
+- **Prefer informative images**: diagrams, charts, screenshots, product photos > decorative photos
+- **One image per scene max**: pick the most relevant one if multiple images match a scene
+- **Set `imageUrl` to the original URL**: the download script handles fetching and path resolution
+- **Set `image` to `null`**: it gets filled by `download-images.ts` with the local path
 
 ### Writing guidelines for each scene's `text`:
 
@@ -167,7 +207,20 @@ choices** (orientation, template, voice, duration). This single file drives the 
 
 Place the `narration.json` from Phase 2 into the project root.
 
-### 3d. Copy shared components
+### 3d. Download article images
+
+If any scenes have `imageUrl` fields, download the images:
+
+```bash
+cd <project-dir>
+npx tsx scripts/download-images.ts
+```
+
+The script downloads each image to `public/images/{scene.id}.{ext}` and writes the local path
+back to narration.json's `image` field. Failed downloads are skipped gracefully — scenes without
+images simply render without them.
+
+### 3e. Copy shared components
 
 The setup script copies `SharedComponents.tsx` and `themes.ts` from
 `<skill-path>/template/src/components/` into the project. `themes.ts` defines the 6 selectable
@@ -175,7 +228,7 @@ templates; `SharedComponents.tsx` provides theme-aware building blocks (BoldCard
 GlassCard, AnimatedText, Background, etc.) that **read colors and fonts from the active theme via
 `useTheme()`** — so the same scene code looks correct under any template.
 
-### 3e. Write scene components
+### 3f. Write scene components
 
 Create one React component per scene in `src/scenes/`. Each scene component:
 
@@ -190,7 +243,8 @@ Create one React component per scene in `src/scenes/`. Each scene component:
 ```tsx
 import React from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig, spring } from "remotion";
-import { SceneProps, Background, SlideNumber, TopNav, BoldCard, SectionLine, useTheme } from "../components/SharedComponents";
+import { SceneProps, Background, SlideNumber, TopNav, BoldCard, SectionLine, SceneImage, useTheme } from "../components/SharedComponents";
+import narration from "../../narration.json";
 
 const NAV_LABELS = ["开篇", "..."]; // navigation breadcrumb labels
 
@@ -198,6 +252,8 @@ export const SceneXX: React.FC<SceneProps> = ({ fontDisplay, fontBody, fontMono,
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const theme = useTheme(); // colors adapt to the chosen template
+  const scene = (narration as any).scenes[sceneIndex];
+  const imagePath = scene?.image; // local path from download-images.ts, or null
 
   return (
     <AbsoluteFill>
@@ -205,6 +261,7 @@ export const SceneXX: React.FC<SceneProps> = ({ fontDisplay, fontBody, fontMono,
       <SlideNumber current={N} total={totalScenes} fontFamily={fontMono} />
       <TopNav labels={NAV_LABELS} activeIndex={N-1} fontFamily={fontBody} />
       {/* Scene content — use theme.colors.* for any color, fontDisplay for headings */}
+      {/* If imagePath exists, use <SceneImage src={imagePath} /> in the layout */}
     </AbsoluteFill>
   );
 };
@@ -226,6 +283,9 @@ export const SceneXX: React.FC<SceneProps> = ({ fontDisplay, fontBody, fontMono,
 | Centered statement | Big questions, quotes | Large centered text in BoldCard |
 | Table/data | Comparisons, mappings | DarkCard with animated table rows |
 | Case studies | Success/failure stories | 3 cards with colored left borders (green/yellow/red) |
+| Image + text | Scene has article image | Left: title + description cards, Right: `<SceneImage>` in a container |
+| Image accent | Small diagram/chart image | Image inside a GlassCard alongside text content |
+| Full-bleed image hero | Strong opening/closing photo | Full-width `<SceneImage>` with text overlay via BoldCard |
 
 **Animation rules**:
 - Use `spring()` for scale/position (bouncy, physical feel)
@@ -342,6 +402,9 @@ Opens Remotion Studio at `http://localhost:3000`. Use it to scrub through scenes
 | Subtitles out of sync with audio | Adjust `startFrame`/`endFrame` in narration.json manually |
 | Subtitles overlap scene content | Subtitles render at `z-index: 100` with `bottom: 80px` — ensure scene content leaves bottom 120px clear |
 | No subtitles appearing | Verify `narration.json` has `subtitles` field (run generate-audio.ts first) |
+| Image download fails (403/timeout) | Some sites block direct downloads — try Playwright to save images instead |
+| Image not showing in scene | Verify `image` field in narration.json is set (run download-images.ts first) |
+| Image appears stretched | Use `fit="contain"` on SceneImage, or set explicit width/height via `style` prop |
 
 ---
 
@@ -357,12 +420,15 @@ Opens Remotion Studio at `http://localhost:3000`. Use it to scrub through scenes
 │   │   ├── Scene01Xxx.tsx
 │   │   └── ...
 │   └── components/
-│       ├── SharedComponents.tsx  # Theme-aware BoldCard, DarkCard, etc.
+│       ├── SharedComponents.tsx  # Theme-aware BoldCard, DarkCard, SceneImage, etc.
 │       └── themes.ts             # 6 template definitions + useTheme source
-├── public/audio/             # Generated mp3 files
+├── public/
+│   ├── audio/                # Generated mp3 files
+│   └── images/               # Downloaded article images
 ├── scripts/
-│   └── generate-audio.ts     # MiniMax TTS script (reads voice from config)
-├── narration.json            # Narration text + durations
+│   ├── generate-audio.ts     # MiniMax TTS script (reads voice from config)
+│   └── download-images.ts    # Article image downloader (reads imageUrl from narration.json)
+├── narration.json            # Narration text + durations + image paths
 ├── video.config.json         # orientation / template / voice / duration
 ├── remotion.config.ts
 ├── tsconfig.json

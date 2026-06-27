@@ -23,6 +23,7 @@ Article URL → Narration Script → TTS Audio → Animated Scenes → MP4 Video
 ## Features
 
 - **Full Pipeline** — Fetch article, write narration, generate voiceover, build animated scenes, render MP4, all in one conversation
+- **Article Image Extraction** — Automatically extracts and downloads images from the source article for use in video scenes
 - **6 Visual Themes** — Clean Light (minimal), Editorial (warm serif), Aurora Night (dark tech), Neubrutalist (bold Gen Z), Zen Garden (natural calm), Retro Sunset (vaporwave vibes)
 - **5 AI Voices** — Warm male, authoritative male, warm female, news anchor, documentary narrator
 - **Flexible Duration** — From 1-minute quick glances to 5-minute deep dives
@@ -68,9 +69,9 @@ Then the pipeline runs automatically through 6 phases.
 | Phase | Description |
 |-------|-------------|
 | **0. Gather Requirements** | Interactive setup — orientation, theme, voice, duration |
-| **1. Fetch & Analyze** | Download and parse the article content |
-| **2. Write Narration** | Generate scene-by-scene narration scripts in Chinese |
-| **3. Set Up Project** | Initialize a Remotion project with templates and components |
+| **1. Fetch & Analyze** | Download and parse the article content, extract images |
+| **2. Write Narration** | Generate scene-by-scene narration scripts in Chinese, map article images to scenes |
+| **3. Set Up Project** | Initialize a Remotion project with templates and components, download images |
 | **4. Generate Audio** | Call MiniMax TTS API to produce MP3 audio per scene + auto subtitles |
 | **5. Render Video** | Build animated React scenes and render to MP4 via Remotion |
 | **6. Deliver** | Report output, open video, offer adjustments |
@@ -112,10 +113,13 @@ After the skill sets up a video project, the directory looks like:
 ```
 <project-dir>/
 ├── video.config.json          # Single source of truth (orientation, theme, voice, duration)
-├── narration.json             # Scene narration text + audio durations + subtitle timing
-├── public/audio/              # Generated MP3 files per scene
+├── narration.json             # Scene narration text + audio durations + subtitle timing + image paths
+├── public/
+│   ├── audio/                 # Generated MP3 files per scene
+│   └── images/                # Downloaded article images
 ├── scripts/
-│   └── generate-audio.ts      # MiniMax TTS generation script
+│   ├── generate-audio.ts      # MiniMax TTS generation script
+│   └── download-images.ts     # Article image download script
 ├── src/
 │   ├── index.ts               # Remotion entry point
 │   ├── index.css              # CSS reset
@@ -150,7 +154,7 @@ interface SceneProps {
 - Portrait: stack vertically, max ~3 items per scene, larger text, content within central ~900px
 
 **Available components:**
-`Background`, `BoldCard`, `GlassCard`, `TextReveal`, `AnimatedText`, `AnimatedCounter`, `FlowArrow`, `ProgressBar`, `Subtitles`, `SceneTransition`, `SlideNumber`, `TopNav`, and more.
+`Background`, `BoldCard`, `GlassCard`, `SceneImage`, `TextReveal`, `AnimatedText`, `AnimatedCounter`, `FlowArrow`, `ProgressBar`, `Subtitles`, `SceneTransition`, `SlideNumber`, `TopNav`, and more.
 
 ## Configuration
 

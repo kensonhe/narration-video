@@ -1,5 +1,5 @@
 import React from "react";
-import { AbsoluteFill, interpolate, useCurrentFrame, spring, useVideoConfig, Easing } from "remotion";
+import { AbsoluteFill, interpolate, useCurrentFrame, spring, useVideoConfig, Easing, Img, staticFile } from "remotion";
 import { Theme, getTheme, DEFAULT_TEMPLATE } from "./themes";
 
 /* ===========================================
@@ -315,6 +315,53 @@ export const GlassCard: React.FC<{
         : `0 0 20px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05)`,
     }}>
       {children}
+    </div>
+  );
+};
+
+/* ===========================================
+   Scene Image — article image with animation
+   Displays a downloaded article image with spring entrance animation
+   and theme-aware styling. Gracefully renders nothing if src is empty.
+   =========================================== */
+export const SceneImage: React.FC<{
+  /** Filename relative to public/ (e.g. "images/scene01.jpg") */
+  src?: string | null;
+  delay?: number;
+  style?: React.CSSProperties;
+  borderRadius?: number;
+  /** How the image fits inside its container. Default "cover". */
+  fit?: "cover" | "contain";
+}> = ({ src, delay = 0, style, borderRadius, fit = "cover" }) => {
+  const theme = useTheme();
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+
+  if (!src) return null;
+
+  const scale = spring({ frame: frame - delay, fps, from: 0.92, to: 1, config: { damping: 14, stiffness: 60 } });
+  const opacity = interpolate(frame - delay, [0, 20], [0, 1], { extrapolateRight: "clamp", extrapolateLeft: "clamp" });
+  const radius = borderRadius ?? theme.card.radius;
+
+  return (
+    <div style={{
+      borderRadius: radius,
+      overflow: "hidden",
+      transform: `scale(${scale})`,
+      opacity,
+      border: `1px solid ${theme.colors.cardBorder}`,
+      boxShadow: `0 16px 48px rgba(0,0,0,0.25), 0 0 0 1px ${theme.colors.cardBorder}`,
+      ...style,
+    }}>
+      <Img
+        src={staticFile(src)}
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: fit,
+          display: "block",
+        }}
+      />
     </div>
   );
 };

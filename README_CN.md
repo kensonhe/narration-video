@@ -23,6 +23,7 @@
 ## 核心特性
 
 - **全流程自动化** — 抓取文章、撰写文案、生成配音、构建动画场景、渲染视频，一次对话完成
+- **文章图片提取** — 自动从源文章中提取并下载图片，用于视频场景中的视觉表达
 - **6 套视觉主题** — 简约亮色（高级感）、杂志衬线（人文感）、极光暗夜（科技感）、新粗暴主义（Gen Z 潮流）、禅意花园（自然舒适）、复古日落（怀旧风）
 - **5 种 AI 配音** — 温暖男声、商务男声、温暖女声、新闻女主播、纪录片解说
 - **灵活时长** — 从 1 分钟速览到 5 分钟深度解读
@@ -68,9 +69,9 @@
 | 阶段 | 说明 |
 |------|------|
 | **0. 收集需求** | 交互式设置 — 方向、主题、声音、时长 |
-| **1. 抓取分析** | 下载并解析文章内容 |
-| **2. 撰写文案** | 生成中文逐场景解说脚本 |
-| **3. 搭建项目** | 初始化 Remotion 项目，配置模板和组件 |
+| **1. 抓取分析** | 下载并解析文章内容，提取图片 |
+| **2. 撰写文案** | 生成中文逐场景解说脚本，将文章图片映射到场景 |
+| **3. 搭建项目** | 初始化 Remotion 项目，配置模板和组件，下载图片 |
 | **4. 生成音频** | 调用 MiniMax TTS API 生成每个场景的 MP3 音频 + 自动字幕 |
 | **5. 渲染视频** | 构建 React 动画场景并通过 Remotion 渲染为 MP4 |
 | **6. 交付视频** | 报告输出、打开视频、提供调整选项 |
@@ -112,10 +113,13 @@
 ```
 <项目目录>/
 ├── video.config.json          # 单一配置源（方向、主题、声音、时长）
-├── narration.json             # 场景文案 + 音频时长 + 字幕时间轴
-├── public/audio/              # 每个场景生成的 MP3 文件
+├── narration.json             # 场景文案 + 音频时长 + 字幕时间轴 + 图片路径
+├── public/
+│   ├── audio/                 # 每个场景生成的 MP3 文件
+│   └── images/                # 下载的文章图片
 ├── scripts/
-│   └── generate-audio.ts      # MiniMax TTS 生成脚本
+│   ├── generate-audio.ts      # MiniMax TTS 生成脚本
+│   └── download-images.ts     # 文章图片下载脚本
 ├── src/
 │   ├── index.ts               # Remotion 入口
 │   ├── index.css              # CSS 重置
@@ -150,7 +154,7 @@ interface SceneProps {
 - 竖屏：垂直堆叠，每场景最多 ~3 个元素，更大字号，内容集中在中央 ~900px 宽度内
 
 **可用组件：**
-`Background`（背景）、`BoldCard`（强调卡片）、`GlassCard`（玻璃卡片）、`TextReveal`（文字揭示）、`AnimatedText`（动画文字）、`AnimatedCounter`（数字动画）、`FlowArrow`（流程箭头）、`ProgressBar`（进度条）、`Subtitles`（字幕）、`SceneTransition`（场景过渡）、`SlideNumber`（场景编号）、`TopNav`（顶部导航）等。
+`Background`（背景）、`BoldCard`（强调卡片）、`GlassCard`（玻璃卡片）、`SceneImage`（文章图片）、`TextReveal`（文字揭示）、`AnimatedText`（动画文字）、`AnimatedCounter`（数字动画）、`FlowArrow`（流程箭头）、`ProgressBar`（进度条）、`Subtitles`（字幕）、`SceneTransition`（场景过渡）、`SlideNumber`（场景编号）、`TopNav`（顶部导航）等。
 
 ## 配置说明
 

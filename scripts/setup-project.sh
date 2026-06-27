@@ -39,7 +39,7 @@ npm install @remotion/google-fonts @remotion/media
 
 # Step 3: Create directory structure
 echo "→ Setting up directories..."
-mkdir -p src/scenes src/components public/audio scripts
+mkdir -p src/scenes src/components public/audio public/images scripts
 
 # Step 4: Copy shared components + theme system
 echo "→ Copying shared components..."
@@ -55,6 +55,10 @@ fi
 # Step 5: Copy audio generation script
 echo "→ Copying TTS script..."
 cp "$SKILL_DIR/template/scripts/generate-audio.ts" scripts/
+
+# Step 5b: Copy image download script
+echo "→ Copying image download script..."
+cp "$SKILL_DIR/template/scripts/download-images.ts" scripts/
 
 # Step 6: Copy Root.tsx and Video.tsx templates
 echo "→ Copying Root.tsx and Video.tsx..."
