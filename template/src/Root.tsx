@@ -19,6 +19,7 @@ import { getTheme, type FontRole } from "./components/themes";
 // =====================================================
 const theme = getTheme((config as { template?: string }).template);
 const orientation = (config as { orientation?: string }).orientation === "portrait" ? "portrait" : "landscape";
+const subtitlesEnabled = (config as { subtitles?: boolean }).subtitles !== false; // default: true
 const WIDTH = orientation === "portrait" ? 1080 : 1920;
 const HEIGHT = orientation === "portrait" ? 1920 : 1080;
 
@@ -148,7 +149,7 @@ function splitTextToSubtitles(
 
 const sceneFrames = calculateSceneFrames();
 const totalDuration = sceneFrames.reduce((sum, s) => sum + s.duration, 0);
-const subtitles = extractSubtitles();
+const subtitles = subtitlesEnabled ? extractSubtitles() : [];
 
 // =====================================================
 // COVER DATA (from narration.json top-level fields)

@@ -28,36 +28,41 @@ The pipeline has 6 phases. Each must complete before the next begins.
 
 ## Phase 0: Gather Requirements
 
-Before starting, ask the user these questions in a **single AskUserQuestion call** (5 questions),
-then write the answers into a `video.config.json` file (created in Phase 3).
+Before starting, gather requirements from the user using **two AskUserQuestion calls**:
 
-1. **API Key** — Do they have a MiniMax API key? (from platform.minimax.io)
-   - If yes, ask them to provide it
-   - If no, guide them: visit https://platform.minimax.io, sign up, create API key
-2. **Orientation** — 横屏 or 竖屏?
-   - `landscape` — 横屏 1920×1080 (default, for B站/YouTube/桌面)
-   - `portrait` — 竖屏 1080×1920 (for 抖音/小红书/手机)
-3. **Template** — Which visual style?
-   - `clean-light` — 极简浅色 (知识/财经/高级感, default)
-   - `editorial` — 杂志风暖纸 (人文/深度/故事)
-   - `aurora-night` — 极光暗夜 (科技/科学/未来感)
-   - `neubrutalist` — 新粗暴主义 (Gen Z/潮流/病毒式)
-   - `zen-garden` — 禅意花园 (生活/健康/文化)
-   - `retro-sunset` — 复古日落 (创意/怀旧/音乐)
-4. **Voice** — Which narrator voice?
-   - `audiobook_male_1` — 有声书男声 (default, warm narration)
-   - `male-qn-jingying` — 精英青年男声 (authoritative/business)
-   - `audiobook_female_1` — 有声书女声 (warm female)
-   - `Chinese (Mandarin)_News_Anchor` — 新闻女声 (formal)
-   - `doc_commentary` — 纪录片解说 (documentary)
-5. **Duration** — How long, roughly?
+**First AskUserQuestion call** (4 questions — visual & audio config):
 
-   | Preset | Scenes | Total narration chars | ~Length |
-   |--------|--------|------------------------|---------|
-   | `glance` (速览) | 4–5 | 400–600 | ~1 min |
-   | `standard` (标准) | 8–10 | 900–1200 | ~3 min (default) |
-   | `deep` (深度) | 12–15 | 1500–2000 | ~5 min |
-   | `auto` | by article length | — | — |
+   - **Orientation** — 横屏 or 竖屏?
+     - `landscape` — 横屏 1920×1080 (default, for B站/YouTube/桌面)
+     - `portrait` — 竖屏 1080×1920 (for 抖音/小红书/手机)
+   - **Template** — Which visual style?
+     - `clean-light` — 极简浅色 (知识/财经/高级感, default)
+     - `editorial` — 杂志风暖纸 (人文/深度/故事)
+     - `aurora-night` — 极光暗夜 (科技/科学/未来感)
+     - `neubrutalist` — 新粗暴主义 (Gen Z/潮流/病毒式)
+     (Also available via "Other": `zen-garden` 禅意花园, `retro-sunset` 复古日落)
+   - **Voice** — Which narrator voice?
+     - `audiobook_male_1` — 有声书男声 (default, warm narration)
+     - `male-qn-jingying` — 精英青年男声 (authoritative/business)
+     - `audiobook_female_1` — 有声书女声 (warm female)
+     - `doc_commentary` — 纪录片解说 (documentary)
+     (Also available via "Other": `Chinese (Mandarin)_News_Anchor` 新闻女声)
+   - **Subtitles** — 是否显示字幕?
+     - `true` — 显示字幕 (default, 在视频底部显示旁白文字)
+     - `false` — 不显示字幕 (纯净画面，无字幕叠加)
+
+**Second AskUserQuestion call** (2 questions — API key & duration):
+
+   - **API Key** — MiniMax API Key (从 platform.minimax.io 获取):
+     - `已有Key` — 我已有 API Key (选 "Other" 直接粘贴)
+     - `需要帮助` — 我还没有，需要指导获取
+   - **Duration** — 视频时长:
+     - `standard` — 标准 ~3分钟 (8-10个场景, default)
+     - `glance` — 速览 ~1分钟 (4-5个场景)
+     - `deep` — 深度 ~5分钟 (12-15个场景)
+     - `auto` — 根据文章长度自动决定
+
+If the user selected "需要帮助" for API Key, guide them: visit https://platform.minimax.io, sign up, create API key, then paste it.
 
 Store the answers — they become `video.config.json`:
 
@@ -66,13 +71,14 @@ Store the answers — they become `video.config.json`:
   "orientation": "landscape",
   "template": "clean-light",
   "voice": { "voiceId": "audiobook_male_1", "speed": 1.0, "pitch": 0 },
-  "duration": "standard"
+  "duration": "standard",
+  "subtitles": true
 }
 ```
 
 The setup script (Phase 3) copies a default `video.config.json`; **overwrite it with the user's
 choices** before generating audio or rendering. The whole pipeline reads this one file:
-`Root.tsx` (orientation + template), `generate-audio.ts` (voice). The API key is critical — don't
+`Root.tsx` (orientation + template + subtitles), `generate-audio.ts` (voice). The API key is critical — don't
 proceed without it.
 
 ---
@@ -215,8 +221,8 @@ Where `<skill-path>` is the path to this skill's directory and `<project-dir>` i
 ### 3b. Write video.config.json
 
 The setup script copies a default `video.config.json`. **Overwrite it with the user's Phase 0
-choices** (orientation, template, voice, duration). This single file drives the entire pipeline —
-`Root.tsx` reads `orientation` (1920×1080 vs 1080×1920) and `template`; `generate-audio.ts` reads
+choices** (orientation, template, voice, duration, subtitles). This single file drives the entire pipeline —
+`Root.tsx` reads `orientation` (1920×1080 vs 1080×1920), `template`, and `subtitles` (boolean); `generate-audio.ts` reads
 `voice`.
 
 ### 3c. Copy narration.json
@@ -310,7 +316,7 @@ export const SceneXX: React.FC<SceneProps> = ({ fontDisplay, fontBody, fontMono,
 - Always `extrapolateRight: "clamp"` to prevent value overshoot
 - Never use CSS animations — they flicker in Remotion renders
 
-**Subtitle-safe zone**: Subtitles render at the bottom of the screen (`bottom: 80px`, semi-transparent background). Keep scene content clear of the bottom ~140px to avoid overlap. Use `padding-bottom: 100px` on scene content containers if needed.
+**Subtitle-safe zone**: When subtitles are enabled (`subtitles: true` in config), they render at the bottom of the screen (`bottom: 80px`, semi-transparent background). Keep scene content clear of the bottom ~140px to avoid overlap. Use `padding-bottom: 100px` on scene content containers if needed. When subtitles are disabled, the full screen area is available.
 
 ---
 
@@ -333,7 +339,12 @@ The script will:
 
 ### How subtitles work
 
-Subtitles are generated automatically as a side-effect of audio generation:
+Subtitles are generated automatically as a side-effect of audio generation. Whether they appear in the final video is controlled by the `subtitles` field in `video.config.json` (Phase 0):
+
+- **`subtitles: true`** (default) — subtitles are rendered at the bottom of each scene
+- **`subtitles: false`** — subtitle data is still generated (for timing reference) but **not rendered** in the video
+
+The generation process:
 
 1. **Text splitting**: Each scene's narration text is split by Chinese punctuation marks (。！？；：). Sentences longer than 24 characters are further split at ~20-character boundaries.
 2. **Timing distribution**: Segments are distributed evenly across the audio duration. If a scene has 15 seconds of audio and 5 subtitle segments, each segment shows for ~3 seconds.
@@ -422,7 +433,8 @@ Opens Remotion Studio at `http://localhost:3000`. Use it to scrub through scenes
 | Chinese text shows as squares | Font not loaded — check subsets include `chinese-simplified` |
 | Subtitles out of sync with audio | Adjust `startFrame`/`endFrame` in narration.json manually |
 | Subtitles overlap scene content | Subtitles render at `z-index: 100` with `bottom: 80px` — ensure scene content leaves bottom 120px clear |
-| No subtitles appearing | Verify `narration.json` has `subtitles` field (run generate-audio.ts first) |
+| No subtitles appearing | Verify `narration.json` has `subtitles` field (run generate-audio.ts first) and `video.config.json` has `"subtitles": true` |
+| Subtitles showing when user disabled them | Check `video.config.json` — set `"subtitles": false` to hide them |
 | Image download fails (403/timeout) | Some sites block direct downloads — try Playwright to save images instead |
 | Image not showing in scene | Verify `image` field in narration.json is set (run download-images.ts first) |
 | Image appears stretched | Use `fit="contain"` on SceneImage, or set explicit width/height via `style` prop |
@@ -451,7 +463,7 @@ Opens Remotion Studio at `http://localhost:3000`. Use it to scrub through scenes
 │   ├── generate-audio.ts     # MiniMax TTS script (reads voice from config)
 │   └── download-images.ts    # Article image downloader (reads imageUrl from narration.json)
 ├── narration.json            # Narration text + durations + image paths + cover data
-├── video.config.json         # orientation / template / voice / duration
+├── video.config.json         # orientation / template / voice / duration / subtitles
 ├── remotion.config.ts
 ├── tsconfig.json
 ├── package.json
