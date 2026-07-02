@@ -51,16 +51,16 @@ Before starting, gather requirements from the user using **two AskUserQuestion c
      - `true` — 显示字幕 (default, 在视频底部显示旁白文字)
      - `false` — 不显示字幕 (纯净画面，无字幕叠加)
 
-**Second AskUserQuestion call** (2 questions — API key & duration):
+**Second AskUserQuestion call** (2 questions — duration & API key):
 
-   - **API Key** — MiniMax API Key (从 platform.minimax.io 获取):
-     - `已有Key` — 我已有 API Key (选 "Other" 直接粘贴)
-     - `需要帮助` — 我还没有，需要指导获取
    - **Duration** — 视频时长:
      - `standard` — 标准 ~3分钟 (8-10个场景, default)
      - `glance` — 速览 ~1分钟 (4-5个场景)
      - `deep` — 深度 ~5分钟 (12-15个场景)
      - `auto` — 根据文章长度自动决定
+   - **API Key** — MiniMax API Key (从 platform.minimax.io 获取):
+     - `已有Key` — 我已有 API Key (选 "Other" 直接粘贴)
+     - `需要帮助` — 我还没有，需要指导获取
 
 If the user selected "需要帮助" for API Key, guide them: visit https://platform.minimax.io, sign up, create API key, then paste it.
 
