@@ -2,14 +2,28 @@ import "./index.css";
 import { Composition } from "remotion";
 import { NarrationVideo } from "./Video";
 import { Cover } from "./Cover";
-import { loadFont as loadArchivoBlack } from "@remotion/google-fonts/ArchivoBlack";
-import { loadFont as loadNotoSansSC } from "@remotion/google-fonts/NotoSansSC";
-import { loadFont as loadNotoSerifSC } from "@remotion/google-fonts/NotoSerifSC";
-import { loadFont as loadSpaceGrotesk } from "@remotion/google-fonts/SpaceGrotesk";
-import { loadFont as loadPlayfairDisplay } from "@remotion/google-fonts/PlayfairDisplay";
-import { loadFont as loadBebasNeue } from "@remotion/google-fonts/BebasNeue";
-import { loadFont as loadRussoOne } from "@remotion/google-fonts/RussoOne";
-import { loadFont as loadJetBrainsMono } from "@remotion/google-fonts/JetBrainsMono";
+// Fonts: bundled locally via @fontsource. The woff2 files ship inside the
+// npm packages and are webpack-bundled at render time, so rendering never
+// contacts Google (fonts.gstatic.com is blocked in China). This replaces the
+// old @remotion/google-fonts setup that fetched fonts at render time.
+// Only the weights each font actually uses are imported.
+import "@fontsource/archivo-black/400.css";
+import "@fontsource/noto-sans-sc/400.css";
+import "@fontsource/noto-sans-sc/700.css";
+import "@fontsource/noto-serif-sc/400.css";
+import "@fontsource/noto-serif-sc/700.css";
+import "@fontsource/noto-serif-sc/900.css";
+import "@fontsource/space-grotesk/400.css";
+import "@fontsource/space-grotesk/500.css";
+import "@fontsource/space-grotesk/700.css";
+import "@fontsource/playfair-display/400.css";
+import "@fontsource/playfair-display/700.css";
+import "@fontsource/playfair-display/900.css";
+import "@fontsource/bebas-neue/400.css";
+import "@fontsource/russo-one/400.css";
+import "@fontsource/jetbrains-mono/400.css";
+import "@fontsource/jetbrains-mono/500.css";
+import "@fontsource/jetbrains-mono/700.css";
 import narration from "../narration.json";
 import config from "../video.config.json";
 import { getTheme, type FontRole } from "./components/themes";
@@ -24,45 +38,21 @@ const WIDTH = orientation === "portrait" ? 1080 : 1920;
 const HEIGHT = orientation === "portrait" ? 1920 : 1080;
 
 // =====================================================
-// FONT LOADING
-// All families are loaded; the active theme decides which drives
-// display / body / mono text (see themes.ts `fonts`).
+// FONT FAMILIES
+// The @fontsource CSS imports above register each family via @font-face
+// (woff2 bundled locally — no network fetch at render). The active theme
+// decides which drives display / body / mono text (see themes.ts `fonts`).
+// Family names must match the @font-face declarations in each package.
 // =====================================================
-const archivoBlack = loadArchivoBlack();
-const notoSansSC = loadNotoSansSC("normal", {
-  weights: ["400", "700"],
-  subsets: ["chinese-simplified", "latin"],
-  ignoreTooManyRequestsWarning: true,
-});
-const notoSerifSC = loadNotoSerifSC("normal", {
-  weights: ["400", "700", "900"],
-  subsets: ["chinese-simplified", "latin"],
-  ignoreTooManyRequestsWarning: true,
-});
-const spaceGrotesk = loadSpaceGrotesk("normal", {
-  weights: ["400", "500", "700"],
-  subsets: ["latin"],
-});
-const playfairDisplay = loadPlayfairDisplay("normal", {
-  weights: ["400", "700", "900"],
-  subsets: ["latin"],
-});
-const bebasNeue = loadBebasNeue();
-const russoOne = loadRussoOne();
-const jetBrainsMono = loadJetBrainsMono("normal", {
-  weights: ["400", "500", "700"],
-  subsets: ["latin"],
-});
-
 const FONT_FAMILIES: Record<FontRole, string> = {
-  archivoBlack: archivoBlack.fontFamily,
-  notoSansSC: notoSansSC.fontFamily,
-  notoSerifSC: notoSerifSC.fontFamily,
-  spaceGrotesk: spaceGrotesk.fontFamily,
-  playfairDisplay: playfairDisplay.fontFamily,
-  bebasNeue: bebasNeue.fontFamily,
-  russoOne: russoOne.fontFamily,
-  jetBrainsMono: jetBrainsMono.fontFamily,
+  archivoBlack: "Archivo Black",
+  notoSansSC: "Noto Sans SC",
+  notoSerifSC: "Noto Serif SC",
+  spaceGrotesk: "Space Grotesk",
+  playfairDisplay: "Playfair Display",
+  bebasNeue: "Bebas Neue",
+  russoOne: "Russo One",
+  jetBrainsMono: "JetBrains Mono",
 };
 
 const fontDisplay = FONT_FAMILIES[theme.fonts.display];
