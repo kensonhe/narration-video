@@ -3,3 +3,8 @@ node_modules/
 out/
 *.mp3
 *.mp4
+
+# Local runtime artifacts (generated when running the skill locally)
+narration.json
+narration-hook.json
+.playwright-mcp/
