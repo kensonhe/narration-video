@@ -386,6 +386,25 @@ export const SceneXX: React.FC<SceneProps> = ({ fontDisplay, fontBody, fontMono,
 | Image accent | Small diagram/chart image | Image inside a GlassCard alongside text content |
 | Full-bleed image hero | Strong opening/closing photo | Full-width `<SceneImage>` with text overlay via BoldCard |
 
+**Typography — size text for phone viewing** (the #1 readability rule):
+
+Most viewers watch on phones. A 1920×1080 video squeezed into a ~360px-tall feed
+turns a 28px body font into ~9px on screen — unreadable. So size text up, and
+prefer a few large elements over many small ones. These are floors; go larger
+for primary content.
+
+| Element | Landscape (1920×1080) | Portrait (1080×1920) |
+|---------|------------------------|------------------------|
+| Primary heading / display | ≥ 64px (72–96 typical) | ≥ 56px (64–80 typical) |
+| Card body / bullets / list | ≥ 30px (32–40 typical) | ≥ 34px (36–44 typical) |
+| Big numbers / counters | ≥ 72px | ≥ 64px |
+| Subtitles (auto-rendered) | 44px | 54px |
+| Secondary chrome (slide no., nav) | 18–22px | 20–24px |
+
+If a card would need 4+ bullets below 28px to fit, cut to 2–3 and raise the
+size — dense small text is exactly the "can't read it" complaint. The
+one-idea-per-scene rule already keeps text short; now make what's left big.
+
 **Animation rules**:
 - Use `spring()` for scale/position (bouncy, physical feel)
 - Use `interpolate()` for opacity fades (smooth)
@@ -393,7 +412,7 @@ export const SceneXX: React.FC<SceneProps> = ({ fontDisplay, fontBody, fontMono,
 - Always `extrapolateRight: "clamp"` to prevent value overshoot
 - Never use CSS animations — they flicker in Remotion renders
 
-**Subtitle-safe zone**: When subtitles are enabled (`subtitles: true` in config), they render at the bottom of the screen (`bottom: 80px`, semi-transparent background). Keep scene content clear of the bottom ~140px to avoid overlap. Use `padding-bottom: 100px` on scene content containers if needed. When subtitles are disabled, the full screen area is available.
+**Subtitle-safe zone**: When subtitles are enabled (`subtitles: true` in config), they render at the bottom of the screen (landscape `bottom: 100px`, portrait `bottom: 220px`, semi-transparent background) at 44px (landscape) / 54px (portrait). Keep scene content clear of the bottom ~190px (landscape) / ~330px (portrait) to avoid overlap — use `padding-bottom` on scene content containers accordingly. When subtitles are disabled, the full screen area is available.
 
 ---
 
@@ -515,7 +534,7 @@ Opens Remotion Studio at `http://localhost:3000`. Use it to scrub through scenes
 | MiniMax API returns error | Check API key validity; verify account has credits |
 | Chinese text shows as squares | `@fontsource` package not installed — run `npm install` in the project so `node_modules/@fontsource/noto-sans-sc` exists; verify `Root.tsx` imports `@fontsource/noto-sans-sc/400.css` |
 | Subtitles out of sync with audio | Adjust `startFrame`/`endFrame` in narration.json manually |
-| Subtitles overlap scene content | Subtitles render at `z-index: 100` with `bottom: 80px` — ensure scene content leaves bottom 120px clear |
+| Subtitles overlap scene content | Subtitles render at `z-index: 100` (44px landscape / 54px portrait) — leave the bottom ~190px (landscape) / ~330px (portrait) clear |
 | No subtitles appearing | Verify `narration.json` has `subtitles` field (run generate-audio.ts first) and `video.config.json` has `"subtitles": true` |
 | Subtitles showing when user disabled them | Check `video.config.json` — set `"subtitles": false` to hide them |
 | Image download fails (403/timeout) | Some sites block direct downloads — try Playwright to save images instead |

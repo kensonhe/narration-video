@@ -203,7 +203,7 @@ export const SlideNumber: React.FC<{
   const frame = useCurrentFrame();
   const opacity = interpolate(frame, [5, 25], [0, 1], { extrapolateRight: "clamp" });
   return (
-    <div style={{ position: "absolute", top: 50, left: 70, fontFamily, fontSize: 16, color: theme.colors.textMuted, letterSpacing: "0.2em", opacity, display: "flex", alignItems: "center", gap: 12 }}>
+    <div style={{ position: "absolute", top: 50, left: 70, fontFamily, fontSize: 18, color: theme.colors.textMuted, letterSpacing: "0.2em", opacity, display: "flex", alignItems: "center", gap: 12 }}>
       <div style={{ width: 24, height: 2, background: theme.colors.accent, borderRadius: 1 }} />
       {String(current).padStart(2, "0")} / {String(total).padStart(2, "0")}
     </div>
@@ -222,7 +222,7 @@ export const TopNav: React.FC<{
   const frame = useCurrentFrame();
   const opacity = interpolate(frame, [5, 30], [0, 1], { extrapolateRight: "clamp" });
   return (
-    <div style={{ position: "absolute", top: 50, right: 70, display: "flex", gap: 18, fontFamily, fontSize: 15, opacity }}>
+    <div style={{ position: "absolute", top: 50, right: 70, display: "flex", gap: 18, fontFamily, fontSize: 18, opacity }}>
       {labels.map((label, i) => (
         <span key={i} style={{
           color: i === activeIndex ? theme.colors.textPrimary : theme.colors.textMuted,
@@ -639,10 +639,10 @@ export const Subtitles: React.FC<{
   const translateY = interpolate(frame - activeSegment.startFrame, [0, fadeFrames], [6, 0], { extrapolateRight: "clamp", extrapolateLeft: "clamp" });
 
   return (
-    <div style={{ position: "absolute", bottom: portrait ? 220 : 80, left: 0, right: 0, display: "flex", justifyContent: "center", zIndex: 100, padding: "0 40px" }}>
+    <div style={{ position: "absolute", bottom: portrait ? 220 : 100, left: 0, right: 0, display: "flex", justifyContent: "center", zIndex: 100, padding: "0 40px" }}>
       <div style={{
         fontFamily,
-        fontSize: portrait ? 40 : 32,
+        fontSize: portrait ? 54 : 44,
         color: theme.subtitle.text,
         lineHeight: 1.6,
         textAlign: "center",
