@@ -288,13 +288,6 @@ bash <skill-path>/scripts/setup-project.sh <project-dir>
 
 Where `<skill-path>` is the path to this skill's directory and `<project-dir>` is where the project should be created (e.g., `~/narration-video-<topic>`).
 
-**Works in China without a VPN** — the script defaults the npm registry to the
-China mirror (`registry.npmmirror.com`) and installs fonts via `@fontsource`
-(woff2 bundled locally, so rendering never reaches Google Fonts). Non-China
-users override the registry: `NV_NPM_REGISTRY=https://registry.npmjs.org/`. See
-`references/china-network.md` for the full network setup (npm, MiniMax,
-Playwright mirrors).
-
 ### 3b. Write video.config.json
 
 The setup script copies a default `video.config.json`. **Overwrite it with the user's Phase 0
@@ -422,12 +415,8 @@ Run the audio generation script with the MiniMax API key:
 
 ```bash
 cd <project-dir>
-MINIMAX_API_KEY="<key>" npx tsx scripts/generate-audio.ts
+MINIMAX_API_KEY="<key>" MINIMAX_API_BASE="https://api.minimaxi.com/v1" npx tsx scripts/generate-audio.ts
 ```
-
-The script defaults to the **China endpoint** (`api.minimaxi.com`), so Chinese
-users need no VPN. Global users override:
-`MINIMAX_API_BASE=https://api.minimax.io/v1 npx tsx scripts/generate-audio.ts`.
 
 The script will:
 1. Read each scene's `text` from `narration.json`
@@ -473,17 +462,16 @@ The subtitle data is saved to `narration.json` under each scene's `subtitles` fi
 
 ### MiniMax API details
 
-- **Endpoint**: `POST https://api.minimaxi.com/v1/t2a_v2` (China — the script's default) or `https://api.minimax.io/v1/t2a_v2` (Global)
+- **Endpoint**: `POST https://api.minimaxi.com/v1/t2a_v2` (China) or `https://api.minimax.io/v1/t2a_v2` (Global)
 - **Auth**: `Authorization: Bearer <API_KEY>`
 - **Model**: `speech-2.8-hd` (highest quality)
 - **Response**: `data.audio` is hex-encoded MP3 bytes; `extra_info.audio_length` is duration in ms
 - **Rate limit**: ~60 RPM, add 500ms delay between requests
 - **Cost**: ~$1 per hour of audio
 
-### If the user is outside China
+### If the user is in China
 
-The script defaults to the China endpoint (`api.minimaxi.com`, no VPN needed in
-China). Global users override: `MINIMAX_API_BASE="https://api.minimax.io/v1"`.
+Use `MINIMAX_API_BASE="https://api.minimaxi.com/v1"` (note the extra 'i' in minimaxi.com).
 
 ---
 
@@ -527,12 +515,12 @@ Opens Remotion Studio at `http://localhost:3000`. Use it to scrub through scenes
 | Problem | Solution |
 |---------|----------|
 | WebFetch fails on URL | Use Playwright browser to fetch content |
-| Playwright Chromium download fails (China) | Install via the China mirror: `PLAYWRIGHT_DOWNLOAD_HOST=https://npmmirror.com/mirrors/playwright/ npx playwright install chromium`. Playwright is only the article-fetch fallback — see `references/china-network.md` |
+| NotoSansSC font loading too slow | Add `ignoreTooManyRequestsWarning: true` to loadFont options |
 | Audio 404 in Remotion Studio | Run the TTS script first to generate mp3 files |
 | TypeScript errors on unused imports | Set `noUnusedLocals: false` in tsconfig |
 | Remotion render out of memory | Reduce concurrency: `--concurrency=2` |
 | MiniMax API returns error | Check API key validity; verify account has credits |
-| Chinese text shows as squares | `@fontsource` package not installed — run `npm install` in the project so `node_modules/@fontsource/noto-sans-sc` exists; verify `Root.tsx` imports `@fontsource/noto-sans-sc/400.css` |
+| Chinese text shows as squares | Font not loaded — check subsets include `chinese-simplified` |
 | Subtitles out of sync with audio | Adjust `startFrame`/`endFrame` in narration.json manually |
 | Subtitles overlap scene content | Subtitles render at `z-index: 100` (44px landscape / 54px portrait) — leave the bottom ~190px (landscape) / ~330px (portrait) clear |
 | No subtitles appearing | Verify `narration.json` has `subtitles` field (run generate-audio.ts first) and `video.config.json` has `"subtitles": true` |

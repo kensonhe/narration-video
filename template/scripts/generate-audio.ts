@@ -55,9 +55,7 @@ interface MiniMaxResponse {
 }
 
 const API_KEY = process.env.MINIMAX_API_KEY;
-// Default to the China endpoint (api.minimaxi.com) so Chinese users don't need
-// a VPN. Global users override: MINIMAX_API_BASE=https://api.minimax.io/v1
-const API_BASE = process.env.MINIMAX_API_BASE || "https://api.minimaxi.com/v1";
+const API_BASE = process.env.MINIMAX_API_BASE || "https://api.minimax.io/v1";
 
 if (!API_KEY) {
   console.error("Error: MINIMAX_API_KEY environment variable is required.");

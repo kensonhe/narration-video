@@ -13,19 +13,9 @@ set -e
 PROJECT_DIR="${1:?Usage: setup-project.sh <project-directory>}"
 SKILL_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 
-# npm registry — defaults to the China mirror (npmmirror.com) so installs work
-# without a VPN. Non-China users override: NV_NPM_REGISTRY=https://registry.npmjs.org/
-NPM_REGISTRY="${NV_NPM_REGISTRY:-https://registry.npmmirror.com}"
-# Export so child processes (npx, create-video's internal npm install) inherit
-# the mirror too — the --registry flags below cover direct npm calls, but
-# create-video runs its own `npm install` which only reads npm config/env.
-export npm_config_registry="$NPM_REGISTRY"
-export npm_config_yes=true   # auto-confirm npx's "install create-video?" prompt
-
 echo "=== Narration Video Project Setup ==="
 echo "Project: $PROJECT_DIR"
 echo "Skill:   $SKILL_DIR"
-echo "Registry: $NPM_REGISTRY"
 echo ""
 
 # Step 1: Create Remotion project
@@ -37,21 +27,15 @@ else
   PARENT_DIR="$(dirname "$PROJECT_DIR")"
   PROJECT_NAME="$(basename "$PROJECT_DIR")"
   cd "$PARENT_DIR"
-  npx --registry="$NPM_REGISTRY" create-video@latest --yes --blank "$PROJECT_NAME"
+  npx create-video@latest --yes --blank "$PROJECT_NAME"
 fi
 
 cd "$PROJECT_DIR"
 
 # Step 2: Install dependencies
-# Fonts are bundled locally via @fontsource — the woff2 ships inside each npm
-# package and is webpack-bundled at render time, so rendering never fetches
-# from Google Fonts (blocked in China). This replaces @remotion/google-fonts.
 echo "→ Installing dependencies..."
-npm --registry="$NPM_REGISTRY" install
-npm --registry="$NPM_REGISTRY" install \
-  @fontsource/archivo-black @fontsource/noto-sans-sc @fontsource/noto-serif-sc \
-  @fontsource/space-grotesk @fontsource/playfair-display @fontsource/bebas-neue \
-  @fontsource/russo-one @fontsource/jetbrains-mono @remotion/media
+npm install
+npm install @remotion/google-fonts @remotion/media
 
 # Step 3: Create directory structure
 echo "→ Setting up directories..."
@@ -76,11 +60,10 @@ cp "$SKILL_DIR/template/scripts/generate-audio.ts" scripts/
 echo "→ Copying image download script..."
 cp "$SKILL_DIR/template/scripts/download-images.ts" scripts/
 
-# Step 6: Copy Root.tsx, Video.tsx, and Cover.tsx templates
-echo "→ Copying Root.tsx, Video.tsx, Cover.tsx..."
+# Step 6: Copy Root.tsx and Video.tsx templates
+echo "→ Copying Root.tsx and Video.tsx..."
 cp "$SKILL_DIR/template/src/Root.tsx" src/
 cp "$SKILL_DIR/template/src/Video.tsx" src/
-cp "$SKILL_DIR/template/src/Cover.tsx" src/
 
 # Step 7: Write index.ts entry point
 echo "→ Writing entry point..."
