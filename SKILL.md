@@ -176,6 +176,11 @@ eye-catching and summarize the video at a glance.
 - **`coverImageUrl`** (optional) — The most visually striking image from the article. Pick the one that would make someone stop scrolling. If omitted, the cover uses only the themed background
 - **`coverImage`** — Set to `null`; filled by `download-images.ts`
 
+**Cover design rules**:
+- **Title must be centered** — the cover title is the focal point; it must be centered both horizontally and vertically on the cover (use `textAlign: "center"` and flex `alignItems: "center"`, `justifyContent: "center"`). Never left-align or offset the title
+- **Colors must match the video theme** — the cover shares the same `templateId` and theme as the video scenes. Use `useTheme()` and `theme.colors.*` (accent, textPrimary, textSecondary, bg.gradient, glow) for all cover colors. Do NOT hardcode arbitrary colors that differ from the scene palette. When a hero image is present, white text with dark overlay is acceptable for readability; otherwise, use the theme's native colors so the cover looks like a natural part of the video
+- **Hero image overlay** — when a `coverImage` is present, add a gradient overlay tinted with the theme's base color (`theme.bg.base`) at ~50% opacity (e.g. `linear-gradient(135deg, rgba(base,0.65), rgba(base,0.45), rgba(base,0.55))`). This keeps the cover's color palette consistent with the video instead of using a generic black overlay
+
 ### Video description (发布文案)
 
 The `description` field is the publish caption pasted into the platform post alongside the video —
@@ -382,19 +387,24 @@ export const SceneXX: React.FC<SceneProps> = ({ fontDisplay, fontBody, fontMono,
 **Typography — size text for phone viewing** (the #1 readability rule):
 
 Most viewers watch on phones. A 1920×1080 video squeezed into a ~360px-tall feed
-turns a 28px body font into ~9px on screen — unreadable. So size text up, and
-prefer a few large elements over many small ones. These are floors; go larger
-for primary content.
+turns a 28px body font into ~9px on screen — unreadable. So size text up
+**aggressively**, and prefer a few large elements over many small ones. The values
+below are **hard minimums — aim for the typical range, not the floor**. If your
+scene code has any `fontSize` below these minimums (except subtitles), it is wrong.
 
 | Element | Landscape (1920×1080) | Portrait (1080×1920) |
 |---------|------------------------|------------------------|
-| Primary heading / display | ≥ 64px (72–96 typical) | ≥ 56px (64–80 typical) |
-| Card body / bullets / list | ≥ 30px (32–40 typical) | ≥ 34px (36–44 typical) |
-| Big numbers / counters | ≥ 72px | ≥ 64px |
-| Subtitles (auto-rendered) | 44px | 54px |
-| Secondary chrome (slide no., nav) | 18–22px | 20–24px |
+| Primary heading / display | ≥ 80px (88–120 typical) | ≥ 72px (80–108 typical) |
+| Card body / bullets / list | ≥ 34px (36–44 typical) | ≥ 38px (40–48 typical) |
+| Big numbers / counters | ≥ 88px (96–120 typical) | ≥ 76px (84–100 typical) |
+| Subtitles (auto-rendered — do NOT change) | 44px | 54px |
+| Secondary chrome (slide no., nav) | 20–24px | 22–26px |
 
-If a card would need 4+ bullets below 28px to fit, cut to 2–3 and raise the
+**Important**: subtitle sizes (44px landscape / 54px portrait) are fixed in
+`SharedComponents.tsx` — do not modify them. All other text should be larger
+than the minimums above.
+
+If a card would need 4+ bullets below 34px to fit, cut to 2–3 and raise the
 size — dense small text is exactly the "can't read it" complaint. The
 one-idea-per-scene rule already keeps text short; now make what's left big.
 

@@ -13,6 +13,15 @@ import {
 } from "./components/SharedComponents";
 import { getTheme, type TemplateId } from "./components/themes";
 
+/** Convert a hex color to rgba with the given alpha. */
+const hexToRgba = (hex: string, alpha: number): string => {
+  const h = hex.replace("#", "");
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
+};
+
 /* ===========================================
    COVER — video thumbnail / cover image
    Rendered as a single still frame via:
@@ -96,13 +105,12 @@ const CoverContent: React.FC<CoverProps> = ({
               objectFit: "cover",
             }}
           />
-          {/* Gradient overlay for text readability */}
+          {/* Gradient overlay — themed tint at ~50% for text readability */}
           <div
             style={{
               position: "absolute",
               inset: 0,
-              background:
-                "linear-gradient(135deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.45) 50%, rgba(0,0,0,0.65) 100%)",
+              background: `linear-gradient(135deg, ${hexToRgba(theme.bg.base, 0.65)} 0%, ${hexToRgba(theme.bg.base, 0.45)} 50%, ${hexToRgba(theme.bg.base, 0.55)} 100%)`,
             }}
           />
         </div>
