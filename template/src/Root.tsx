@@ -2,16 +2,10 @@ import "./index.css";
 import { Composition } from "remotion";
 import { NarrationVideo } from "./Video";
 import { Cover } from "./Cover";
-import { loadFont as loadArchivoBlack } from "@remotion/google-fonts/ArchivoBlack";
-import { loadFont as loadNotoSansSC } from "@remotion/google-fonts/NotoSansSC";
-import { loadFont as loadNotoSerifSC } from "@remotion/google-fonts/NotoSerifSC";
-import { loadFont as loadSpaceGrotesk } from "@remotion/google-fonts/SpaceGrotesk";
-import { loadFont as loadPlayfairDisplay } from "@remotion/google-fonts/PlayfairDisplay";
-import { loadFont as loadBebasNeue } from "@remotion/google-fonts/BebasNeue";
-import { loadFont as loadRussoOne } from "@remotion/google-fonts/RussoOne";
-import { loadFont as loadJetBrainsMono } from "@remotion/google-fonts/JetBrainsMono";
+import { loadLocalFont } from "./components/LocalFonts";
 import narration from "../narration.json";
 import config from "../video.config.json";
+import fontManifest from "../font-manifest.json";
 import { getTheme, type FontRole } from "./components/themes";
 
 // =====================================================
@@ -24,35 +18,20 @@ const WIDTH = orientation === "portrait" ? 1080 : 1920;
 const HEIGHT = orientation === "portrait" ? 1920 : 1080;
 
 // =====================================================
-// FONT LOADING
-// All families are loaded; the active theme decides which drives
-// display / body / mono text (see themes.ts `fonts`).
+// FONT LOADING (local — no Google CDN required)
+// All families are loaded from public/fonts/ via font-manifest.json.
+// The active theme decides which drives display / body / mono text.
 // =====================================================
-const archivoBlack = loadArchivoBlack();
-const notoSansSC = loadNotoSansSC("normal", {
-  weights: ["400", "700"],
-  subsets: ["chinese-simplified", "latin"],
-  ignoreTooManyRequestsWarning: true,
-});
-const notoSerifSC = loadNotoSerifSC("normal", {
-  weights: ["400", "700", "900"],
-  subsets: ["chinese-simplified", "latin"],
-  ignoreTooManyRequestsWarning: true,
-});
-const spaceGrotesk = loadSpaceGrotesk("normal", {
-  weights: ["400", "500", "700"],
-  subsets: ["latin"],
-});
-const playfairDisplay = loadPlayfairDisplay("normal", {
-  weights: ["400", "700", "900"],
-  subsets: ["latin"],
-});
-const bebasNeue = loadBebasNeue();
-const russoOne = loadRussoOne();
-const jetBrainsMono = loadJetBrainsMono("normal", {
-  weights: ["400", "500", "700"],
-  subsets: ["latin"],
-});
+const manifest = fontManifest as Record<string, Array<{ filename: string; weight: string }>>;
+
+const archivoBlack = loadLocalFont("ArchivoBlack", "Archivo Black", manifest["ArchivoBlack"] || []);
+const notoSansSC = loadLocalFont("NotoSansSC", "Noto Sans SC", manifest["NotoSansSC"] || []);
+const notoSerifSC = loadLocalFont("NotoSerifSC", "Noto Serif SC", manifest["NotoSerifSC"] || []);
+const spaceGrotesk = loadLocalFont("SpaceGrotesk", "Space Grotesk", manifest["SpaceGrotesk"] || []);
+const playfairDisplay = loadLocalFont("PlayfairDisplay", "Playfair Display", manifest["PlayfairDisplay"] || []);
+const bebasNeue = loadLocalFont("BebasNeue", "Bebas Neue", manifest["BebasNeue"] || []);
+const russoOne = loadLocalFont("RussoOne", "Russo One", manifest["RussoOne"] || []);
+const jetBrainsMono = loadLocalFont("JetBrainsMono", "JetBrains Mono", manifest["JetBrainsMono"] || []);
 
 const FONT_FAMILIES: Record<FontRole, string> = {
   archivoBlack: archivoBlack.fontFamily,

@@ -37,6 +37,43 @@ echo "→ Installing dependencies..."
 npm install
 npm install @remotion/google-fonts @remotion/media
 
+# Step 2b: Copy cached Chrome Headless Shell (avoids VPN download)
+echo "→ Setting up Chrome Headless Shell..."
+CHROME_CACHE="$SKILL_DIR/cache/chrome-headless-shell"
+CHROME_DEST="$PROJECT_DIR/node_modules/.remotion/chrome-headless-shell"
+if [ -d "$CHROME_CACHE" ] && [ ! -d "$CHROME_DEST" ]; then
+  mkdir -p "$CHROME_DEST"
+  cp -R "$CHROME_CACHE/"* "$CHROME_DEST/"
+  echo "  ✓ Chrome copied from cache"
+else
+  if [ -d "$CHROME_DEST" ]; then
+    echo "  ⏭ Chrome already exists in project"
+  else
+    echo "  ⚠ Chrome cache not found at $CHROME_CACHE (will download on first render)"
+  fi
+fi
+
+# Step 2c: Copy cached Google Fonts (avoids VPN download)
+echo "→ Setting up local fonts..."
+FONTS_CACHE="$SKILL_DIR/cache/fonts"
+FONTS_DEST="$PROJECT_DIR/public/fonts"
+if [ -d "$FONTS_CACHE" ] && [ -f "$FONTS_CACHE/manifest.json" ]; then
+  mkdir -p "$FONTS_DEST"
+  # Copy each font family directory
+  for family_dir in "$FONTS_CACHE"/*/; do
+    if [ -d "$family_dir" ]; then
+      family_name=$(basename "$family_dir")
+      mkdir -p "$FONTS_DEST/$family_name"
+      cp "$family_dir"*.woff2 "$FONTS_DEST/$family_name/" 2>/dev/null || true
+    fi
+  done
+  # Generate font-manifest.json for Root.tsx
+  cp "$FONTS_CACHE/manifest.json" "$PROJECT_DIR/font-manifest.json"
+  echo "  ✓ Fonts copied from cache + manifest generated"
+else
+  echo "  ⚠ Font cache not found (run: npx tsx scripts/download-fonts.ts with VPN first)"
+fi
+
 # Step 3: Create directory structure
 echo "→ Setting up directories..."
 mkdir -p src/scenes src/components public/audio public/images scripts
@@ -45,6 +82,7 @@ mkdir -p src/scenes src/components public/audio public/images scripts
 echo "→ Copying shared components..."
 cp "$SKILL_DIR/template/src/components/SharedComponents.tsx" src/components/
 cp "$SKILL_DIR/template/src/components/themes.ts" src/components/
+cp "$SKILL_DIR/template/src/components/LocalFonts.tsx" src/components/
 
 # Step 4b: Copy default video config (orientation / template / voice / duration)
 echo "→ Copying video.config.json..."

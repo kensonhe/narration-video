@@ -293,6 +293,17 @@ bash <skill-path>/scripts/setup-project.sh <project-dir>
 
 Where `<skill-path>` is the path to this skill's directory and `<project-dir>` is where the project should be created (e.g., `~/narration-video-<topic>`).
 
+The setup script automatically copies cached Chrome Headless Shell and pre-downloaded Google Fonts from `<skill-path>/cache/` into the project — **no VPN required** for rendering if the cache is populated. If the cache is empty, Remotion will download Chrome on first render (requires VPN in China).
+
+To populate the cache (one-time, requires VPN):
+```bash
+# Copy Chrome from any existing project
+cp -R ~/narration-video-*/node_modules/.remotion/chrome-headless-shell <skill-path>/cache/
+# Download all Google Fonts woff2 files
+cd <skill-path>
+npx tsx scripts/download-fonts.ts
+```
+
 ### 3b. Write video.config.json
 
 The setup script copies a default `video.config.json`. **Overwrite it with the user's Phase 0
@@ -493,6 +504,12 @@ cd <project-dir>
 npx remotion render src/index.ts NarrationVideo out/narration-video.mp4 --codec=h264 --crf=18
 # Render the cover image
 npx remotion still src/index.ts Cover out/cover.png
+```
+
+If Chrome was not auto-copied from cache (e.g., first-time setup without VPN), Remotion will download it automatically on first render. You can also point to a cached Chrome binary:
+```bash
+npx remotion render src/index.ts NarrationVideo out/narration-video.mp4 --codec=h264 --crf=18 \
+  --browser-executable=<skill-path>/cache/chrome-headless-shell/mac-arm64/chrome-headless-shell-mac-arm64/chrome-headless-shell
 ```
 
 Video rendering takes 3-8 minutes depending on machine specs (8332 frames for a ~4.5 min video at 30fps).
