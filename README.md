@@ -25,7 +25,7 @@ Article URL → Narration Script → TTS Audio → Animated Scenes → MP4 Video
 - **Full Pipeline** — Fetch article, write narration, generate voiceover, build animated scenes, render MP4, all in one conversation
 - **Article Image Extraction** — Automatically extracts and downloads images from the source article for use in video scenes
 - **Cover Generation** — Renders a professional 1920×1080 thumbnail image alongside the video, with themed styling and article hero image support
-- **6 Visual Themes** — Clean Light (minimal), Editorial (warm serif), Aurora Night (dark tech), Neubrutalist (bold Gen Z), Zen Garden (natural calm), Retro Sunset (vaporwave vibes)
+- **10 Visual Themes** — Clean Light (minimal), Editorial (warm serif), Aurora Night (dark tech), Neubrutalist (bold Gen Z), Zen Garden (natural calm), Retro Sunset (vaporwave vibes), Midnight Gold (dark premium), Prism Glass (light frosted glass), Mono Press (B&W editorial), Blossom (soft pastel)
 - **5 AI Voices** — Warm male, authoritative male, warm female, news anchor, documentary narrator
 - **Flexible Duration** — From 1-minute quick glances to 5-minute deep dives
 - **Orientation Support** — Landscape (1920×1080) for YouTube/desktop or portrait (1080×1920) for TikTok/Xiaohongshu/Reels
@@ -59,7 +59,7 @@ The skill will guide you through a quick setup:
 
 1. **API Key** — Your MiniMax API key
 2. **Orientation** — Landscape or portrait
-3. **Visual Theme** — Pick from 6 styles
+3. **Visual Theme** — Pick from 10 styles
 4. **Voice** — Pick from 5 Chinese narrator voices
 5. **Duration** — Quick glance, standard, deep dive, or auto
 
@@ -87,6 +87,10 @@ Then the pipeline runs automatically through 6 phases.
 | **Neubrutalist** | Vibrant | Bold hard shadows, bright yellow/red | Gen Z, viral, trendy |
 | **Zen Garden** | Light | Sage green, organic natural feel | Lifestyle, wellness, culture |
 | **Retro Sunset** | Dark | Vaporwave sunset gradient, glass cards | Creative, nostalgia, music |
+| **Midnight Gold** | Dark | Charcoal + gold/purple, glass cards | Business, finance deep-dive, premium |
+| **Prism Glass** | Vibrant | Light gradient + frosted glass | SaaS, startup, modern |
+| **Mono Press** | Light | Pure B&W high-contrast paper | Serious journalism, in-depth reporting |
+| **Blossom** | Light | Soft blush/lilac pastel, glass cards | Wellness, emotional, lifestyle aesthetics |
 
 ## Voices
 
@@ -129,7 +133,7 @@ After the skill sets up a video project, the directory looks like:
 │   ├── Cover.tsx              # Cover/thumbnail composition (single frame)
 │   ├── components/
 │   │   ├── SharedComponents.tsx  # Theme-aware UI components
-│   │   └── themes.ts            # 6 visual template definitions
+│   │   └── themes.ts            # 10 visual template definitions
 │   └── scenes/                # One React component per scene
 └── out/
     ├── narration-video.mp4    # Final rendered video
