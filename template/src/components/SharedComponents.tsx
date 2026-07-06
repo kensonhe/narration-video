@@ -116,6 +116,7 @@ export const GradientMesh: React.FC<{
   const frame = useCurrentFrame();
   const meshColors = colors ?? theme.bg.meshColors;
   const drift = frame * 0.3;
+  const isDark = theme.mode === "dark";
   return (
     <AbsoluteFill style={{ pointerEvents: "none" }}>
       {meshColors.map((c, i) => {
@@ -131,13 +132,23 @@ export const GradientMesh: React.FC<{
               width: `${40 + i * 10}%`,
               height: `${40 + i * 10}%`,
               background: `radial-gradient(ellipse at center, ${c}, transparent 70%)`,
-              filter: "blur(60px)",
+              filter: "blur(80px)",
               opacity: 0.5 * intensity,
               transform: `translate(-50%, -50%)`,
             }}
           />
         );
       })}
+      {/* Top→bottom vignette on dark themes for atmospheric depth */}
+      {isDark && (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.05) 100%)",
+          }}
+        />
+      )}
     </AbsoluteFill>
   );
 };
@@ -268,10 +279,10 @@ export const BoldCard: React.FC<{
       overflow: "hidden",
       transform: `scale(${scale})`,
       opacity,
-      boxShadow: `0 0 ${40 * pulse}px ${glow}, 0 20px 60px rgba(0,0,0,0.4)`,
+      boxShadow: `inset 0 1px 0 rgba(255,255,255,0.18), 0 0 ${40 * pulse}px ${glow}, 0 20px 60px rgba(0,0,0,0.4)`,
     }}>
       <div style={{ position: "absolute", top: "-50%", right: "-20%", width: "60%", height: "200%", background: "rgba(255,255,255,0.06)", borderRadius: "50%" }} />
-      <div style={{ position: "absolute", bottom: "-30%", left: "-10%", width: "40%", height: "120%", background: "rgba(0,0,0,0.05)", borderRadius: "50%" }} />
+      <div style={{ position: "absolute", bottom: "-30%", left: "-10%", width: "40%", height: "120%", background: "rgba(0,0,0,0.03)", borderRadius: "50%" }} />
       <div style={{ position: "relative", zIndex: 1 }}>{children}</div>
     </div>
   );
@@ -296,11 +307,15 @@ export const GlassCard: React.FC<{
   const isPaper = theme.card.style === "paper";
   const isSolid = theme.card.style === "solid";
   const isBrutal = theme.card.style === "brutal";
+  const isGlass = theme.card.style === "glass";
+  // Light/vibrant themes get a soft, airy shadow + strong top inner highlight;
+  // dark themes get a deeper drop shadow so cards lift off the dark base.
+  const isLight = theme.mode === "light" || theme.mode === "vibrant";
 
   return (
     <div style={{
       background: theme.colors.cardBg,
-      backdropFilter: theme.card.style === "glass" ? "blur(20px)" : undefined,
+      backdropFilter: isGlass ? "blur(20px)" : undefined,
       borderRadius: theme.card.radius,
       padding: "36px 44px",
       border: isBrutal ? `3px solid ${theme.colors.cardBorder}` : `1px solid ${border}`,
@@ -309,10 +324,14 @@ export const GlassCard: React.FC<{
       boxShadow: isBrutal
         ? `6px 6px 0 ${theme.colors.accent3}`
         : isPaper
-        ? `0 2px 0 ${border}, 0 18px 40px rgba(60,40,20,0.12)`
+        ? `0 2px 0 ${border}, 0 18px 40px rgba(0,0,0,0.08)`
         : isSolid
-        ? `0 12px 30px rgba(15,23,42,0.08)`
-        : `0 0 20px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05)`,
+        ? `0 12px 30px rgba(0,0,0,${isLight ? 0.06 : 0.12})`
+        : isGlass
+        ? isLight
+          ? `0 8px 24px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.5)`
+          : `0 12px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)`
+        : `0 0 20px rgba(0,0,0,0.3)`,
     }}>
       {children}
     </div>
@@ -350,7 +369,7 @@ export const SceneImage: React.FC<{
       transform: `scale(${scale})`,
       opacity,
       border: `1px solid ${theme.colors.cardBorder}`,
-      boxShadow: `0 16px 48px rgba(0,0,0,0.25), 0 0 0 1px ${theme.colors.cardBorder}`,
+      boxShadow: `inset 0 0 0 1px rgba(255,255,255,0.06), 0 16px 48px rgba(0,0,0,0.25), 0 0 0 1px ${theme.colors.cardBorder}`,
       ...style,
     }}>
       <Img

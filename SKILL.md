@@ -40,7 +40,9 @@ Before starting, gather requirements from the user using **two AskUserQuestion c
      - `editorial` — 杂志风暖纸 (人文/深度/故事)
      - `aurora-night` — 极光暗夜 (科技/科学/未来感)
      - `neubrutalist` — 新粗暴主义 (Gen Z/潮流/病毒式)
-     (Also available via "Other": `zen-garden` 禅意花园, `retro-sunset` 复古日落)
+     (Also available via "Other": `zen-garden` 禅意花园, `retro-sunset` 复古日落,
+     `midnight-gold` 深炭金紫 (商业/财经深度/付费感), `prism-glass` 浅彩磨砂玻璃 (SaaS/创业/现代),
+     `mono-press` 黑白报刊 (严肃/深度/报道), `blossom` 柔粉淡紫 (治愈/情感/生活美学))
    - **Voice** — Which narrator voice?
      - `audiobook_male_1` — 有声书男声 (default, warm narration)
      - `male-qn-jingying` — 精英青年男声 (authoritative/business)

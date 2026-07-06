@@ -1,6 +1,6 @@
 /* ===========================================
    THEME SYSTEM
-   6 selectable visual templates. The active theme is chosen in
+   10 selectable visual templates. The active theme is chosen in
    video.config.json (`template` field) and provided to all scenes via
    <ThemeProvider> in Video.tsx — components read it with useTheme().
 
@@ -11,6 +11,10 @@
    - neubrutalist    bold hard shadows, bright blocks (Gen Z/潮流/病毒式)
    - zen-garden      organic biophilic, natural calm (生活/健康/文化)
    - retro-sunset    vaporwave sunset, retro vibes (创意/怀旧/音乐)
+   - midnight-gold   dark charcoal + gold/purple, premium (商业/财经深度/付费感)
+   - prism-glass     light vibrant gradient + frosted glass (SaaS/创业/现代)
+   - mono-press      pure B&W high-contrast editorial (严肃/深度/报道)
+   - blossom         soft pastel blush/lilac (治愈/情感/生活美学)
    =========================================== */
 
 export type TemplateId =
@@ -19,7 +23,11 @@ export type TemplateId =
   | "aurora-night"
   | "neubrutalist"
   | "zen-garden"
-  | "retro-sunset";
+  | "retro-sunset"
+  | "midnight-gold"
+  | "prism-glass"
+  | "mono-press"
+  | "blossom";
 
 /** Which loaded Google font family drives each text role. Root.tsx maps these
  *  keys to actual loaded font families and passes them to scenes as
@@ -289,6 +297,143 @@ export const THEMES: Record<TemplateId, Theme> = {
       bg: "rgba(26,10,46,0.75)",
       text: "#fff0f0",
       border: "1px solid rgba(255,107,107,0.22)",
+    },
+  },
+
+  /* ---------- Midnight Gold (dark premium, gold + purple) ---------- */
+  "midnight-gold": {
+    id: "midnight-gold",
+    mode: "dark",
+    bg: {
+      base: "#0A0A0F",
+      gradient: "linear-gradient(160deg, #0A0A0F 0%, #14131F 40%, #1A1623 100%)",
+      meshColors: [
+        "rgba(245,158,11,0.10)",
+        "rgba(139,92,246,0.12)",
+        "rgba(217,119,6,0.06)",
+      ],
+      particleColor: "rgba(245,158,11,0.08)",
+      gridOpacity: 0.015,
+    },
+    colors: {
+      accent: "#F59E0B",
+      accent2: "#8B5CF6",
+      accent3: "#FBBF24",
+      glow: "rgba(245,158,11,0.35)",
+      textPrimary: "#F5F1E8",
+      textSecondary: "#A89F8C",
+      textMuted: "#6B6354",
+      textOnCard: "#1A1206",
+      cardBg: "rgba(28,25,38,0.72)",
+      cardBorder: "rgba(245,158,11,0.12)",
+    },
+    card: { radius: 20, style: "glass" },
+    fonts: { display: "spaceGrotesk", body: "notoSansSC", mono: "jetBrainsMono" },
+    subtitle: {
+      bg: "rgba(10,10,15,0.75)",
+      text: "#F5F1E8",
+      border: "1px solid rgba(245,158,11,0.22)",
+    },
+  },
+
+  /* ---------- Prism Glass (light vibrant gradient + frosted glass) ---------- */
+  "prism-glass": {
+    id: "prism-glass",
+    mode: "vibrant",
+    bg: {
+      base: "#EEF0FF",
+      gradient:
+        "linear-gradient(160deg, #F5F3FF 0%, #ECE9FE 35%, #FCE7F3 70%, #FFF1E6 100%)",
+      meshColors: [
+        "rgba(139,92,246,0.18)",
+        "rgba(236,72,153,0.14)",
+        "rgba(59,130,246,0.12)",
+      ],
+      particleColor: "rgba(139,92,246,0.06)",
+      gridOpacity: 0,
+    },
+    colors: {
+      accent: "#7C3AED",
+      accent2: "#EC4899",
+      accent3: "#3B82F6",
+      glow: "rgba(124,58,237,0.25)",
+      textPrimary: "#1E1B2E",
+      textSecondary: "#5B556B",
+      textMuted: "#9B95AB",
+      textOnCard: "#FFFFFF",
+      cardBg: "rgba(255,255,255,0.55)",
+      cardBorder: "rgba(255,255,255,0.6)",
+    },
+    card: { radius: 24, style: "glass" },
+    fonts: { display: "spaceGrotesk", body: "notoSansSC", mono: "jetBrainsMono" },
+    subtitle: {
+      bg: "rgba(30,27,46,0.70)",
+      text: "#FFFFFF",
+      border: "1px solid rgba(124,58,237,0.25)",
+    },
+  },
+
+  /* ---------- Mono Press (pure B&W high-contrast editorial) ---------- */
+  "mono-press": {
+    id: "mono-press",
+    mode: "light",
+    bg: {
+      base: "#FBFAF6",
+      gradient: "linear-gradient(180deg, #FFFFFF 0%, #FBFAF6 100%)",
+      meshColors: ["rgba(0,0,0,0.012)", "rgba(0,0,0,0.008)"],
+      particleColor: "none",
+      gridOpacity: 0,
+    },
+    colors: {
+      accent: "#111111",
+      accent2: "#3A3A3A",
+      accent3: "#6B6B6B",
+      glow: "rgba(0,0,0,0.08)",
+      textPrimary: "#0A0A0A",
+      textSecondary: "#4A4A4A",
+      textMuted: "#8A8A8A",
+      textOnCard: "#FFFFFF",
+      cardBg: "#FFFFFF",
+      cardBorder: "#0A0A0A",
+    },
+    card: { radius: 2, style: "paper" },
+    fonts: { display: "playfairDisplay", body: "notoSerifSC", mono: "jetBrainsMono" },
+    subtitle: {
+      bg: "rgba(10,10,10,0.88)",
+      text: "#FFFFFF",
+      border: "2px solid #0A0A0A",
+    },
+  },
+
+  /* ---------- Blossom (soft pastel blush / lilac) ---------- */
+  blossom: {
+    id: "blossom",
+    mode: "light",
+    bg: {
+      base: "#FDF6F8",
+      gradient: "linear-gradient(170deg, #FFFBF6 0%, #FDF2F8 45%, #F5F0FA 100%)",
+      meshColors: ["rgba(236,72,153,0.10)", "rgba(139,92,246,0.08)"],
+      particleColor: "rgba(236,72,153,0.06)",
+      gridOpacity: 0,
+    },
+    colors: {
+      accent: "#C2185B",
+      accent2: "#8E5BC9",
+      accent3: "#E89BBA",
+      glow: "rgba(194,24,91,0.18)",
+      textPrimary: "#3D2435",
+      textSecondary: "#6E5570",
+      textMuted: "#A392A6",
+      textOnCard: "#FFFFFF",
+      cardBg: "rgba(255,255,255,0.80)",
+      cardBorder: "rgba(194,24,91,0.10)",
+    },
+    card: { radius: 24, style: "glass" },
+    fonts: { display: "notoSerifSC", body: "notoSansSC", mono: "spaceGrotesk" },
+    subtitle: {
+      bg: "rgba(61,36,53,0.78)",
+      text: "#FFFFFF",
+      border: "1px solid rgba(194,24,91,0.25)",
     },
   },
 };
