@@ -105,16 +105,20 @@ const CoverContent: React.FC<CoverProps> = ({
               objectFit: "cover",
             }}
           />
-          {/* Color-scheme mask — theme base color at 20% opacity.
-              Same color as the video's background (theme.bg.base), so the
-              cover reads as part of the chosen 配色 rather than a generic
-              black wash. 20% lets the hero image show through; the title's
-              textShadow carries white-text readability on top. */}
+          {/* Color-scheme mask — theme color at 45% opacity.
+              Same hue family as the video (theme.bg.base for dark themes,
+              theme.colors.textPrimary for light themes — the darkest tone in
+              the palette — so white title text actually reads over the photo).
+              45% subdues the image enough for readability while still letting
+              it show through; the title's textShadow carries the rest. */}
           <div
             style={{
               position: "absolute",
               inset: 0,
-              background: hexToRgba(theme.bg.base, 0.2),
+              background: hexToRgba(
+                theme.mode === "dark" ? theme.bg.base : theme.colors.textPrimary,
+                0.45
+              ),
             }}
           />
         </div>
