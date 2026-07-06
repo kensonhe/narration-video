@@ -53,18 +53,30 @@ Before starting, gather requirements from the user using **two AskUserQuestion c
      - `true` — 显示字幕 (default, 在视频底部显示旁白文字)
      - `false` — 不显示字幕 (纯净画面，无字幕叠加)
 
-**Second AskUserQuestion call** (2 questions — duration & API key):
+**Before asking**: check whether `MINIMAX_API_KEY` is already set in the shell environment —
+without printing its value (never echo the key itself):
+
+```bash
+[ -n "$MINIMAX_API_KEY" ] && echo "set" || echo "unset"
+```
+
+- If the output is `set`, the user has exported the key in their shell profile — **skip the API Key
+  question** below. The audio script (Phase 4) reads `process.env.MINIMAX_API_KEY` automatically,
+  so there's no need to collect or pass the key. Ask only the **Duration** question.
+- If the output is `unset`, ask both questions below (Duration + API Key).
+
+**Second AskUserQuestion call** (Duration, plus API Key only if the env var was unset):
 
    - **Duration** — 视频时长:
      - `standard` — 标准 ~3分钟 (8-10个场景, default)
      - `glance` — 速览 ~1分钟 (4-5个场景)
      - `deep` — 深度 ~5分钟 (12-15个场景)
      - `auto` — 根据文章长度自动决定
-   - **API Key** — MiniMax API Key (从 platform.minimax.io 获取):
+   - **API Key** — (only if `MINIMAX_API_KEY` is unset) MiniMax API Key (从 platform.minimax.io 获取):
      - `已有Key` — 我已有 API Key (选 "Other" 直接粘贴)
      - `需要帮助` — 我还没有，需要指导获取
 
-If the user selected "需要帮助" for API Key, guide them: visit https://platform.minimax.io, sign up, create API key, then paste it.
+If the user selected "需要帮助" for API Key, guide them: visit https://platform.minimax.io, sign up, create API key, then paste it. If they paste a key, hold it for Phase 4 and pass it inline when running the script — do **not** write the key into `video.config.json` (it's a secret; keep it in the conversation/env only).
 
 Store the answers — they become `video.config.json`:
 
@@ -444,12 +456,27 @@ one-idea-per-scene rule already keeps text short; now make what's left big.
 
 ## Phase 4: Generate TTS Audio
 
-Run the audio generation script with the MiniMax API key:
+Run the audio generation script. It reads `MINIMAX_API_KEY` from the environment, so how you
+invoke it depends on where the key came from:
 
+**Key already in the shell env** (Phase 0 detected `MINIMAX_API_KEY` is `set`) — run directly,
+the script inherits the env var. Don't pass the key inline (keeps it out of shell history):
+```bash
+cd <project-dir>
+MINIMAX_API_BASE="https://api.minimaxi.com/v1" npx tsx scripts/generate-audio.ts   # China
+# Outside China, drop MINIMAX_API_BASE (script defaults to https://api.minimax.io/v1):
+npx tsx scripts/generate-audio.ts
+```
+
+**Key collected via conversation** (user pasted it in Phase 0 because the env var was `unset`) —
+pass it inline:
 ```bash
 cd <project-dir>
 MINIMAX_API_KEY="<key>" MINIMAX_API_BASE="https://api.minimaxi.com/v1" npx tsx scripts/generate-audio.ts
 ```
+
+If the script errors with `MINIMAX_API_KEY is not set`, the env var wasn't actually inherited
+(e.g., it's set in a profile this shell didn't source) — fall back to passing it inline.
 
 The script will:
 1. Read each scene's `text` from `narration.json`

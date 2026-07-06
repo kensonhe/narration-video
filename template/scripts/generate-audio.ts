@@ -5,7 +5,10 @@
  * saves mp3 files to public/audio/, and writes audio durations
  * back to narration.json for Remotion frame calculation.
  *
- * Usage: MINIMAX_API_KEY=xxx npx tsx scripts/generate-audio.ts
+ * Usage:
+ *   - If MINIMAX_API_KEY is exported in your shell:  npx tsx scripts/generate-audio.ts
+ *   - Otherwise pass it inline:                     MINIMAX_API_KEY=xxx npx tsx scripts/generate-audio.ts
+ *   - In China, also set: MINIMAX_API_BASE="https://api.minimaxi.com/v1"
  */
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "fs";
@@ -54,12 +57,17 @@ interface MiniMaxResponse {
   };
 }
 
+// The key is read from the environment. If the user has exported
+// MINIMAX_API_KEY in their shell profile, it is inherited automatically —
+// no need to pass it inline. Otherwise the caller (the skill) collects it
+// via conversation and passes it inline as MINIMAX_API_KEY="<key>".
 const API_KEY = process.env.MINIMAX_API_KEY;
 const API_BASE = process.env.MINIMAX_API_BASE || "https://api.minimax.io/v1";
 
 if (!API_KEY) {
-  console.error("Error: MINIMAX_API_KEY environment variable is required.");
-  console.error("Usage: MINIMAX_API_KEY=xxx npx tsx scripts/generate-audio.ts");
+  console.error("Error: MINIMAX_API_KEY is not set in the environment.");
+  console.error("Either export it in your shell (`export MINIMAX_API_KEY=xxx`) or pass it inline:");
+  console.error("  MINIMAX_API_KEY=xxx npx tsx scripts/generate-audio.ts");
   process.exit(1);
 }
 
