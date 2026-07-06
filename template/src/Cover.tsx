@@ -105,12 +105,16 @@ const CoverContent: React.FC<CoverProps> = ({
               objectFit: "cover",
             }}
           />
-          {/* Gradient overlay — themed tint at ~50% for text readability */}
+          {/* Color-scheme mask — theme base color at 20% opacity.
+              Same color as the video's background (theme.bg.base), so the
+              cover reads as part of the chosen 配色 rather than a generic
+              black wash. 20% lets the hero image show through; the title's
+              textShadow carries white-text readability on top. */}
           <div
             style={{
               position: "absolute",
               inset: 0,
-              background: `linear-gradient(135deg, ${hexToRgba(theme.bg.base, 0.65)} 0%, ${hexToRgba(theme.bg.base, 0.45)} 50%, ${hexToRgba(theme.bg.base, 0.55)} 100%)`,
+              background: hexToRgba(theme.bg.base, 0.2),
             }}
           />
         </div>

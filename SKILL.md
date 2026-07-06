@@ -179,23 +179,26 @@ eye-catching and summarize the video at a glance.
 **Cover design rules**:
 - **Title must be centered** — the cover title is the focal point; it must be centered both horizontally and vertically on the cover (use `textAlign: "center"` and flex `alignItems: "center"`, `justifyContent: "center"`). Never left-align or offset the title
 - **Colors must match the video theme** — the cover shares the same `templateId` and theme as the video scenes. Use `useTheme()` and `theme.colors.*` (accent, textPrimary, textSecondary, bg.gradient, glow) for all cover colors. Do NOT hardcode arbitrary colors that differ from the scene palette. When a hero image is present, white text with dark overlay is acceptable for readability; otherwise, use the theme's native colors so the cover looks like a natural part of the video
-- **Hero image overlay** — when a `coverImage` is present, add a gradient overlay tinted with the theme's base color (`theme.bg.base`) at ~50% opacity (e.g. `linear-gradient(135deg, rgba(base,0.65), rgba(base,0.45), rgba(base,0.55))`). This keeps the cover's color palette consistent with the video instead of using a generic black overlay
+- **Hero image mask** — when a `coverImage` is present, lay a flat mask over it using the theme's base color (`theme.bg.base`) at **20% opacity** (e.g. `background: rgba(base, 0.2)`). The mask color must come from the chosen 配色 — `theme.bg.base` is the same color as the video's background, so the cover reads as part of the same color scheme rather than a generic black wash. Keep it at 20% so the hero image still shows through; the title's strong `textShadow` carries white-text readability on top of the lighter mask. Do not use a heavier overlay or a generic black tint
 
 ### Video description (发布文案)
 
 The `description` field is the publish caption pasted into the platform post alongside the video —
-a one-line hook plus trending hashtags. Author it in Phase 2 with the rest of the narration, and
-deliver it ready-to-paste in Phase 6.
+a one-line hook plus trending hashtags. Author it in Phase 2 with the rest of the narration, then
+deliver it ready-to-paste as the **final output of Phase 6** (the last thing the user receives).
 
 - **Length**: keep the whole thing (hook + hashtags) under 80 characters. Platforms truncate long
-  captions and viewers rarely tap "expand more" — a tight caption gets read.
+  captions and viewers rarely tap "expand more" — a tight caption gets read. Count Chinese
+  characters and `#` tags together; if you're over 80, cut tags before cutting the hook.
 - **Hook line first**: open with one punchy sentence that earns the click, echoing the opening
   hook's angle. No links (see "Platform-safe content"); hashtags are fine — they're discovery
   tags, not URLs.
-- **Hashtags at the end**: append 3–5 `#` tags. Mix one broad trending tag for reach
-  (`#知识分享` / `#干货` / `#科技`) with 1–2 topic-specific tags and one platform-native tag
-  (e.g. `#抖音小助手` on 抖音). Pick tags genuinely relevant to the content — empty trending-tag
-  stuffing gets demoted.
+- **Trending hashtags (`#` 热门标签) at the end**: append 3–5 `#`-prefixed tags, leaning on
+  *currently popular* trending tags so the post rides existing traffic rather than cold-starting.
+  Include at least one broad trending tag (`#知识分享` / `#干货` / `科技`), 1–2 topic-specific
+  tags tied to the video's actual subject, and one platform-native tag (e.g. `#抖音小助手` on
+  抖音, `#小红书创作助手` on 小红书). Pick tags genuinely relevant to the content — empty
+  trending-tag stuffing gets demoted by the algorithm.
 - **Example** (38 chars, well under the cap): `AI 正在悄悄取代这三类工作，你中招了吗？#AI #职场 #知识分享 #干货`
 
 ### Image-to-scene mapping
@@ -234,17 +237,24 @@ render after the fact, so treat any link in the narration as a defect to fix *be
   call-to-action survives; link detection doesn't trigger.
 - **Check the cover too** — `coverTitle`/`coverSubtitle`/`coverTag` must be link-free.
 
-### Opening hook (开头噱头) — required
+### Opening hook (开头钩子) — required
 
-The first 3–5 seconds decide whether someone keeps watching or scrolls past, so the opening
-scene's `text` *must* earn that attention. Don't open with the flat "今天我们来聊...". Lead
-instead with one of:
+The first 3–5 seconds are make-or-break. On 抖音/小红书/视频号 a viewer decides whether to keep
+watching or scroll past within those first seconds, so the opening scene's `text` *must* grab
+them and give them a reason to stay. This is the single highest-leverage moment in the whole
+video — a weak open wastes every scene after it. Don't open with the flat "今天我们来聊...".
+Lead instead with one of:
 
 - **A contrarian claim** — "你以为 X 是对的？其实恰好相反。"
 - **A surprising number** — "99% 的人没注意到，这个细节正在..." (let the number do the work)
 - **A stakes question** — "如果你正在做 X，这90秒可能帮你省下三年弯路。"
-- **A mystery box** — "看到最后你会发现，整件事的真相其实只有一句话。"
-- **A relatable pain** — "你是不是也遇到过：...？"
+- **A mystery box** — "看到最后你会发现，整件事的真相其实只有一句话。" (teases a payoff
+  that keeps them watching to the end)
+- **A relatable pain** — "你是不是也遇到过：...？" (the viewer recognizes themselves and stays)
+
+Pair the verbal hook with a visual one: the first frame of scene 1 should be visually striking
+(a bold card, a big number, a provocative question on screen) — not a slow fade-in on empty
+space. The cover title and the opening line should hit the same nerve from two angles.
 
 The hook must stay true to the article — promise only what the video actually delivers. Clickbait
 that doesn't pay off loses the viewer at the letdown and kills completion rate, which is the
@@ -531,7 +541,11 @@ Opens Remotion Studio at `http://localhost:3000`. Use it to scrub through scenes
 1. Tell the user the output file paths and sizes (video + cover)
 2. Open the video: `open <output-path>`
 3. Open the cover: `open out/cover.png`
-4. Print the publish caption from `narration.json`'s `description` field — ready to paste into the platform post (under 80 chars, hook + hashtags, no links)
+4. **Output the publish caption** — print `narration.json`'s `description` field as the final
+   deliverable, ready-to-paste into the platform post. It must be under 80 characters (a hook
+   line + 3–5 `#` trending hashtags, no links). Present it cleanly on its own line so the user
+   can copy it straight into 抖音/B站/小红书/视频号 — this is the last thing they receive, so
+   make it prominent, not buried.
 5. Summarize: resolution, duration, number of scenes, voice used
 6. Offer to adjust: narration text, voice, visual style, cover title, description, or re-render
 
