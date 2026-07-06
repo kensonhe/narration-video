@@ -61,10 +61,17 @@ export interface Theme {
     gridOpacity: number;
   };
   colors: {
+    /** Accent hues are tuned for FILLS and DECORATION (BoldCard bg, lines,
+     *  glows, gradient bars) — NOT for small text on the theme background.
+     *  Several accents (esp. accent2/accent3 on light themes) fall below the
+     *  4.5:1 WCAG floor when used as a text color. For readable colored text
+     *  use `accent` sparingly on large/bold headings only, and prefer
+     *  textPrimary / textSecondary for body copy and numbers. */
     accent: string;
     accent2: string;
     accent3: string;
     glow: string;
+    /** Text roles below are all verified ≥4.5:1 against the theme background. */
     textPrimary: string;
     textSecondary: string;
     textMuted: string;
@@ -108,7 +115,7 @@ export const THEMES: Record<TemplateId, Theme> = {
       glow: "rgba(37,99,235,0.18)",
       textPrimary: "#0f172a",
       textSecondary: "#475569",
-      textMuted: "#94a3b8",
+      textMuted: "#5f7085",
       textOnCard: "#ffffff",
       cardBg: "rgba(255,255,255,0.9)",
       cardBorder: "rgba(15,23,42,0.08)",
@@ -140,7 +147,7 @@ export const THEMES: Record<TemplateId, Theme> = {
       glow: "rgba(192,73,43,0.18)",
       textPrimary: "#241d15",
       textSecondary: "#5c5043",
-      textMuted: "#9a8c79",
+      textMuted: "#6e6050",
       textOnCard: "#faf5ec",
       cardBg: "rgba(255,250,242,0.92)",
       cardBorder: "rgba(120,90,55,0.18)",
@@ -177,7 +184,7 @@ export const THEMES: Record<TemplateId, Theme> = {
       glow: "rgba(34,211,238,0.40)",
       textPrimary: "#f0f4ff",
       textSecondary: "#8899bb",
-      textMuted: "#445577",
+      textMuted: "#6688aa",
       textOnCard: "#060613",
       cardBg: "rgba(12,20,40,0.72)",
       cardBorder: "rgba(34,211,238,0.10)",
@@ -214,7 +221,7 @@ export const THEMES: Record<TemplateId, Theme> = {
       textPrimary: "#1a1a1a",
       textSecondary: "#333333",
       textMuted: "#666666",
-      textOnCard: "#ffffff",
+      textOnCard: "#1a1a1a",
       cardBg: "#ffffff",
       cardBorder: "#000000",
     },
@@ -249,7 +256,7 @@ export const THEMES: Record<TemplateId, Theme> = {
       glow: "rgba(74,124,89,0.18)",
       textPrimary: "#2D372C",
       textSecondary: "#556B55",
-      textMuted: "#8FA08F",
+      textMuted: "#587058",
       textOnCard: "#fafaf5",
       cardBg: "rgba(255,255,252,0.92)",
       cardBorder: "rgba(74,124,89,0.12)",
@@ -286,7 +293,7 @@ export const THEMES: Record<TemplateId, Theme> = {
       glow: "rgba(255,107,107,0.40)",
       textPrimary: "#fff0f0",
       textSecondary: "#dda0a0",
-      textMuted: "#885566",
+      textMuted: "#bb8899",
       textOnCard: "#1a0a2e",
       cardBg: "rgba(45,20,88,0.70)",
       cardBorder: "rgba(255,107,107,0.12)",
@@ -322,7 +329,7 @@ export const THEMES: Record<TemplateId, Theme> = {
       glow: "rgba(245,158,11,0.35)",
       textPrimary: "#F5F1E8",
       textSecondary: "#A89F8C",
-      textMuted: "#6B6354",
+      textMuted: "#9a9080",
       textOnCard: "#1A1206",
       cardBg: "rgba(28,25,38,0.72)",
       cardBorder: "rgba(245,158,11,0.12)",
@@ -359,7 +366,7 @@ export const THEMES: Record<TemplateId, Theme> = {
       glow: "rgba(124,58,237,0.25)",
       textPrimary: "#1E1B2E",
       textSecondary: "#5B556B",
-      textMuted: "#9B95AB",
+      textMuted: "#665f7a",
       textOnCard: "#FFFFFF",
       cardBg: "rgba(255,255,255,0.55)",
       cardBorder: "rgba(255,255,255,0.6)",
@@ -391,7 +398,7 @@ export const THEMES: Record<TemplateId, Theme> = {
       glow: "rgba(0,0,0,0.08)",
       textPrimary: "#0A0A0A",
       textSecondary: "#4A4A4A",
-      textMuted: "#8A8A8A",
+      textMuted: "#6e6e6e",
       textOnCard: "#FFFFFF",
       cardBg: "#FFFFFF",
       cardBorder: "#0A0A0A",
@@ -423,7 +430,7 @@ export const THEMES: Record<TemplateId, Theme> = {
       glow: "rgba(194,24,91,0.18)",
       textPrimary: "#3D2435",
       textSecondary: "#6E5570",
-      textMuted: "#A392A6",
+      textMuted: "#7a687a",
       textOnCard: "#FFFFFF",
       cardBg: "rgba(255,255,255,0.80)",
       cardBorder: "rgba(194,24,91,0.10)",
