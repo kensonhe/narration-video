@@ -32,6 +32,7 @@ Article URL → Narration Script → TTS Audio → Animated Scenes → MP4 Video
 - **Auto Subtitles** — Subtitle timing is automatically generated from the TTS audio with sentence-level sync
 - **Theme-Aware Components** — All visual components adapt to the selected template; no hardcoded colors
 - **Animated Elements** — Particle fields, gradient meshes, text reveals, spring animations, progress bars, and more
+- **Platform-Safe Content** — Automatically strips URLs, GitHub/npm references, and external-download guidance from narration, subtitles, and on-screen text to prevent video platform demotion (限流)
 
 ## Quick Start
 
@@ -223,6 +224,28 @@ npx remotion render src/index.ts NarrationVideo out/narration-video.mp4 --codec=
 - **TTS model**: MiniMax `speech-2.8-hd` (highest quality)
 - **Subtitle generation**: Automatic — splits text by Chinese punctuation, distributes segments evenly across audio duration
 - **Font loading**: Google Fonts via `@remotion/google-fonts` (ArchivoBlack, NotoSansSC, NotoSerifSC, SpaceGrotesk, PlayfairDisplay, BebasNeue, RussoOne, JetBrainsMono)
+
+## Platform-Safe Content
+
+Video platforms (Douyin, Bilibili, Xiaohongshu, WeChat Video) actively demote or ban videos that direct viewers to external sites. This skill enforces strict content rules during narration writing (Phase 2):
+
+**Automatically stripped from narration, subtitles, on-screen text, and descriptions:**
+
+- **URLs and bare domains** — `https://...`, `www.xxx.com`, `xxx.com`
+- **External platform names as destinations** — GitHub, Gitee, npm, PyPI, Docker Hub, Hugging Face, etc.
+- **Search/download directives** — "搜索 xxx", "pip install xxx", "clone this repo"
+- **Repository names used as CTAs** — "项目地址在 xxx-repo"
+
+**Safe rewriting examples:**
+
+| Source article says | ❌ Gets flagged | ✅ Safe alternative |
+|---|---|---|
+| "The project is on GitHub" | "去 GitHub 搜" | Describe what the tool does, omit the location |
+| "Install with `pip install xxx`" | "运行 pip install xxx" | "这个工具叫 xxx，可以直接使用" |
+| "Clone the repo" | "打开 GitHub 克隆仓库" | "作者已经开放使用" |
+| "See docs at docs.xxx.com" | "去 docs.xxx.com 查看" | "具体用法可以搜索关键词「xxx」" |
+
+The principle: the video is **self-contained** — mention a tool's name and what it does, but never where to find it or how to install it. A pre-render scan catches any remaining violations before the expensive render step.
 
 ## Troubleshooting
 
