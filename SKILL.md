@@ -212,8 +212,7 @@ deliver it ready-to-paste as the **final output of Phase 6** (the last thing the
   captions and viewers rarely tap "expand more" — a tight caption gets read. Count Chinese
   characters and `#` tags together; if you're over 80, cut tags before cutting the hook.
 - **Hook line first**: open with one punchy sentence that earns the click, echoing the opening
-  hook's angle. No links (see "Platform-safe content"); hashtags are fine — they're discovery
-  tags, not URLs.
+  hook's angle. No links (see "Platform-safe content"); no external-platform mentions (GitHub, npm, etc.); hashtags are fine — they're discovery tags, not URLs.
 - **Trending hashtags (`#` 热门标签) at the end**: append 3–5 `#`-prefixed tags, leaning on
   *currently popular* trending tags so the post rides existing traffic rather than cold-starting.
   Include at least one broad trending tag (`#知识分享` / `#干货` / `科技`), 1–2 topic-specific
@@ -238,25 +237,67 @@ genuine visual value (typically 30–60% of scenes). When assigning images:
 - **Length**: 50-120 Chinese characters per scene (~15-30 seconds of audio)
 - **Tone**: Conversational, like a knowledgeable friend explaining something
 - **Structure**: One clear idea per scene, with a natural transition to the next
-- **Avoid**: Reading slides verbatim, jargon without explanation, walls of text, and any links/URLs (see "Platform-safe content" below)
+- **Avoid**: Reading slides verbatim, jargon without explanation, walls of text, any links/URLs, and any mention of external platforms (GitHub, npm, PyPI, etc.) as places to find resources — see "Platform-safe content" below
 - **Total**: match the duration preset — `glance` 400–600 chars, `standard` 900–1200, `deep` 1500–2000
 
-### Platform-safe content — no links anywhere
+### Platform-safe content — no links, no external-platform guidance
 
-Video platforms (抖音、B站、小红书、视频号) scan both on-screen text *and* subtitles for links, and
-they demote or flat-out ban videos that contain them. One stray URL can sink a multi-minute
-render after the fact, so treat any link in the narration as a defect to fix *before* moving on.
+Video platforms (抖音、B站、小红书、视频号) scan narration text, on-screen text, *and* subtitles for
+links and external-platform mentions. Videos containing such signals get **demoted in recommendations
+(限流)** or outright banned — even if no actual URL is present. A phrase like "去 GitHub 搜 xxx"
+is just as harmful as a raw link, because the platform's NLP classifiers detect the intent to direct
+users off-platform. Treat any external-platform reference as a defect to fix *before* moving on.
 
-- **No URLs or bare domains in narration `text`** — not `https://...`, not `www.xxx.com`, not
-  `xxx.com`. The TTS would read them aloud badly, and the auto-generated subtitles (Phase 4) would
-  surface them as detectable link text.
+#### No URLs or bare domains anywhere
+
+- **No URLs in narration `text`** — not `https://...`, not `www.xxx.com`, not `xxx.com`. The TTS would
+  read them aloud badly, and subtitles (Phase 4) would surface them as detectable link text.
 - **No URLs as on-screen text in scenes** — no "来源：example.com" labels, no "详见 xxx.com"
   captions. The `imageUrl`/`coverImageUrl` fields are exempt: those are internal fetch paths the
   viewer never sees rendered as text.
-- **Redirect instead of link**: when the article points to a source, product, or site, turn it
-  into a search directive — "搜索关键词「xxx」", "在平台搜「xxx」", "评论区告诉你怎么找". The
-  call-to-action survives; link detection doesn't trigger.
 - **Check the cover too** — `coverTitle`/`coverSubtitle`/`coverTag` must be link-free.
+
+#### No GitHub, code-repository, or external-download guidance
+
+This is the #1 cause of 限流 for tech/knowledge videos. Platforms actively suppress content that
+funnels viewers to external sites. **None of the following may appear in narration `text`,
+on-screen text, subtitles, the `description`, or cover fields:**
+
+- **Naming specific external platforms as destinations** — no "GitHub", "Gitee", "Google",
+  "npm", "PyPI", "Docker Hub", "Hugging Face", "ModelScope", etc. as places the viewer should
+  go. Example violations: "在 GitHub 上搜索 xxx", "去 Gitee 下载", "npm install xxx",
+  "打开 GitHub 搜索这个仓库".
+- **"Search for it" directives** — no "搜索 xxx 就能找到", "Google 一下", "去搜一下这个项目".
+  These signal off-platform traffic and classifiers flag them.
+- **Download/install instructions** — no "运行 pip install xxx", "克隆这个仓库", "下载这个工具".
+  Even without a URL, these tell the viewer to leave the platform.
+- **Repository/project names as CTAs** — no "项目地址在 xxx-repo", "仓库名叫 yyy". Naming a repo
+  is effectively the same as giving a link — the viewer will search for it, and the platform knows.
+
+#### Safe alternatives — how to handle content that references external tools/resources
+
+When the source article mentions a tool, library, or project hosted externally, **rewrite for the
+video audience** using these patterns:
+
+| Article says | ❌ Bad (限流) | ✅ Safe (use these) |
+|---|---|---|
+| "The project is on GitHub at user/repo" | "去 GitHub 搜 user/repo" | Simply **omit** the location; describe what the tool does |
+| "Install with `pip install xxx`" | "运行 pip install xxx" | "这个工具叫 xxx，可以直接使用" |
+| "Clone the repo from GitHub" | "打开 GitHub 克隆仓库" | "作者已经开放使用，感兴趣的朋友可以了解一下" |
+| "Available on npm as @pkg" | "在 npm 搜索 @pkg" | "这个工具已经公开发布，名字就叫 @pkg" |
+| "See the documentation at docs.xxx.com" | "去 docs.xxx.com 查看" | "具体用法可以自行搜索关键词「xxx」" (vague enough to pass) |
+
+**Key principle**: The video should be **self-contained** — the viewer learns something useful
+without needing to go anywhere. If a tool or project is central to the topic, mention its **name**
+and **what it does**, but never **where to find it** or **how to install it**. Let the viewer's
+curiosity do the work — they'll search on their own if interested, and the platform doesn't see
+an off-platform CTA.
+
+#### The `description` field also needs to be clean
+
+The publish caption (`description`) is scanned too. No "GitHub 链接在评论区", no "项目地址私信我",
+no "回复 xxx 获取下载地址". These all trigger demotion. Keep the description purely about the
+**content value** + trending hashtags.
 
 ### Opening hook (开头钩子) — required
 
@@ -304,11 +345,13 @@ reads as manipulative and erodes trust.
 | 2 | Framework | Lay out the mental model or structure |
 | 3-N-2 | Body | One key idea per scene, with examples |
 | N-1 | Synthesis | Tie it all together |
-| N | Closing | Resolve the opening hook and deliver the promised payoff; use a search directive (not a link) for any CTA |
+| N | Closing | Resolve the opening hook and deliver the promised payoff; CTA must be platform-safe (no external-platform mentions — see "Platform-safe content") |
 
 **Before moving to Phase 3**: scan every scene `text`, the cover fields, the `description`, and
-any planned on-screen labels for links. A single URL is the one defect that can get the final
-video banned after a multi-minute render — catch it now, not after.
+any planned on-screen labels for: (1) URLs or bare domains, (2) mentions of GitHub/Gitee/npm/PyPI
+or any external platform as a destination, (3) install/search directives ("搜索 xxx", "pip install",
+"克隆仓库"), (4) repository or project names used as CTAs. Any of these can trigger platform
+限流 — fix them all now, not after the render completes.
 
 ---
 
