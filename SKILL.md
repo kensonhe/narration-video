@@ -167,7 +167,7 @@ Create a `narration.json` file with this structure:
   "coverTitle": "3-12字吸睛标题",
   "coverSubtitle": "一句话概括视频内容",
   "coverTag": "科技",
-  "coverImageUrl": "https://example.com/hero-image.jpg",
+  "coverImageUrl": null,
   "coverImage": null,
   "description": "AI 正在悄悄取代这三类工作，你中招了吗？#AI #职场 #知识分享 #干货",
   "scenes": [
@@ -194,13 +194,14 @@ eye-catching and summarize the video at a glance.
 - **`coverTitle`** (required) — A punchy, short title (3–12 Chinese characters). Think YouTube thumbnail text: bold, curiosity-provoking, impossible to ignore. The cover is the very first thing a viewer sees, so apply the same hook mindset described in "Opening hook" below. Examples: "代码的真相", "AI 要取代谁？", "被忽略的巨头"
 - **`coverSubtitle`** (optional) — One sentence providing context (15–30 characters). Explains what the video is about without duplicating the title
 - **`coverTag`** (optional) — A short category label (2–4 characters) like "科技", "财经", "人文", "深度"
-- **`coverImageUrl`** (optional) — The most visually striking image from the article. Pick the one that would make someone stop scrolling. If omitted, the cover uses only the themed background
+- **`coverImageUrl`** (optional) — A background/hero image is **not required**. Leaving this out is a perfectly good, often better, choice: the cover then renders as a clean, tone-driven design built entirely from the selected template's color scheme (themed gradient background, accent lines, glow). Only set `coverImageUrl` when the article has a genuinely striking image that would make someone stop scrolling — a mediocre or off-topic photo hurts the cover more than no photo. When in doubt, omit it and rely on the theme tone
 - **`coverImage`** — Set to `null`; filled by `download-images.ts`
 
 **Cover design rules**:
 - **Title must be centered** — the cover title is the focal point; it must be centered both horizontally and vertically on the cover (use `textAlign: "center"` and flex `alignItems: "center"`, `justifyContent: "center"`). Never left-align or offset the title
-- **Colors must match the video theme** — the cover shares the same `templateId` and theme as the video scenes. Use `useTheme()` and `theme.colors.*` (accent, textPrimary, textSecondary, bg.gradient, glow) for all cover colors. Do NOT hardcode arbitrary colors that differ from the scene palette. When a hero image is present, white text with dark overlay is acceptable for readability; otherwise, use the theme's native colors so the cover looks like a natural part of the video
-- **Hero image mask** — when a `coverImage` is present, lay a flat mask over it at **45% opacity** using a dark color from the chosen 配色: `theme.bg.base` for dark themes, `theme.colors.textPrimary` (the darkest tone in the palette) for light/vibrant themes — never the light base color, which wouldn't give white title text enough contrast over a photo. 45% subdues the image enough for readability while still letting it show through; the title's strong `textShadow` carries the rest. Do not drop below ~40% or the title becomes unreadable over busy photos; do not use a generic black tint when a theme dark color works.
+- **Colors must match the video theme** — the cover shares the same `templateId` and theme as the video scenes. Use `useTheme()` and `theme.colors.*` (accent, textPrimary, textSecondary, bg.gradient, glow) for all cover colors. Do NOT hardcode arbitrary colors that differ from the scene palette. This is what makes a no-image cover work: the whole design should read as the selected template's 色调
+- **No-image cover (default)** — when `coverImageUrl` is omitted, the cover uses the template's tone directly: `theme.bg.gradient` background, gradient mesh + particles, and the theme's native text colors (`theme.colors.textPrimary` for the title, `theme.colors.textSecondary` for the subtitle) with an `accent`/`glow` treatment. Do NOT force white text or a dark overlay here — those are only for photo backgrounds. The result should look like a natural, self-contained extension of the video's palette
+- **Hero image mask** — *only when* a `coverImage` is present, lay a flat mask over it at **45% opacity** using a dark color from the chosen 配色: `theme.bg.base` for dark themes, `theme.colors.textPrimary` (the darkest tone in the palette) for light/vibrant themes — never the light base color, which wouldn't give white title text enough contrast over a photo. 45% subdues the image enough for readability while still letting it show through; the title's strong `textShadow` carries the rest. Do not drop below ~40% or the title becomes unreadable over busy photos; do not use a generic black tint when a theme dark color works.
 
 ### Video description (发布文案)
 
