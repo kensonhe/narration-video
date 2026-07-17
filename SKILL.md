@@ -35,21 +35,18 @@ Before starting, gather requirements from the user using **two AskUserQuestion c
    - **Orientation** — 横屏 or 竖屏?
      - `landscape` — 横屏 1920×1080 (default, for B站/YouTube/桌面)
      - `portrait` — 竖屏 1080×1920 (for 抖音/小红书/手机)
-   - **Template** — 选择视频视觉风格（全部10个模板，选 "Other" 可输入模板名称）:
+   - **Template** — 选择视频视觉风格（全部7个模板，选 "Other" 可输入模板名称）:
      1. `clean-light` — 极简浅色 (知识/财经/高级感) [默认]
      2. `editorial` — 杂志风暖纸 (人文/深度/故事)
      3. `aurora-night` — 极光暗夜 (科技/科学/未来感)
-     4. `neubrutalist` — 新粗暴主义 (Gen Z/潮流/病毒式)
-     5. `zen-garden` — 禅意花园 (生活/健康/文化)
-     6. `retro-sunset` — 复古日落 (创意/怀旧/音乐)
-     7. `midnight-gold` — 深炭金紫 (商业/财经深度/付费感)
-     8. `prism-glass` — 浅彩磨砂玻璃 (SaaS/创业/现代)
-     9. `mono-press` — 黑白报刊 (严肃/深度/报道)
-     10. `blossom` — 柔粉淡紫 (治愈/情感/生活美学)
+     4. `retro-sunset` — 复古日落 (创意/怀旧/音乐)
+     5. `midnight-gold` — 深炭金紫 (商业/财经深度/付费感)
+     6. `prism-glass` — 浅彩磨砂玻璃 (SaaS/创业/现代)
+     7. `blossom` — 柔粉淡紫 (治愈/情感/生活美学)
      - `clean-light` — 极简浅色 [默认]
      - `editorial` — 杂志风暖纸
      - `aurora-night` — 极光暗夜
-     - `neubrutalist` — 新粗暴主义
+     - `retro-sunset` — 复古日落
    - **Voice** — Which narrator voice?
      - `audiobook_male_1` — 有声书男声 (default, warm narration)
      - `male-qn-jingying` — 精英青年男声 (authoritative/business)

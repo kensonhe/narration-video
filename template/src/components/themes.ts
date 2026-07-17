@@ -1,6 +1,6 @@
 /* ===========================================
    THEME SYSTEM
-   10 selectable visual templates. The active theme is chosen in
+   7 selectable visual templates. The active theme is chosen in
    video.config.json (`template` field) and provided to all scenes via
    <ThemeProvider> in Video.tsx — components read it with useTheme().
 
@@ -8,12 +8,9 @@
    - clean-light     near-white minimal, thin accents (知识/财经/高级感)
    - editorial       warm paper, big serif (人文/深度/故事)
    - aurora-night    aurora borealis glow, flowing gradients (科技/科学/未来)
-   - neubrutalist    bold hard shadows, bright blocks (Gen Z/潮流/病毒式)
-   - zen-garden      organic biophilic, natural calm (生活/健康/文化)
    - retro-sunset    vaporwave sunset, retro vibes (创意/怀旧/音乐)
    - midnight-gold   dark charcoal + gold/purple, premium (商业/财经深度/付费感)
    - prism-glass     light vibrant gradient + frosted glass (SaaS/创业/现代)
-   - mono-press      pure B&W high-contrast editorial (严肃/深度/报道)
    - blossom         soft pastel blush/lilac (治愈/情感/生活美学)
    =========================================== */
 
@@ -21,12 +18,9 @@ export type TemplateId =
   | "clean-light"
   | "editorial"
   | "aurora-night"
-  | "neubrutalist"
-  | "zen-garden"
   | "retro-sunset"
   | "midnight-gold"
   | "prism-glass"
-  | "mono-press"
   | "blossom";
 
 /** Which loaded Google font family drives each text role. Root.tsx maps these
@@ -198,78 +192,6 @@ export const THEMES: Record<TemplateId, Theme> = {
     },
   },
 
-  /* ---------- Neubrutalist (hard shadows, bold blocks, Gen Z) ---------- */
-  neubrutalist: {
-    id: "neubrutalist",
-    mode: "vibrant",
-    bg: {
-      base: "#FFEB3B",
-      gradient:
-        "linear-gradient(145deg, #FFEB3B 0%, #FFD600 45%, #FFC107 100%)",
-      meshColors: [
-        "rgba(255,82,82,0.12)",
-        "rgba(33,150,243,0.10)",
-      ],
-      particleColor: "none",
-      gridOpacity: 0,
-    },
-    colors: {
-      accent: "#FF5252",
-      accent2: "#2196F3",
-      accent3: "#000000",
-      glow: "rgba(0,0,0,0.12)",
-      textPrimary: "#1a1a1a",
-      textSecondary: "#333333",
-      textMuted: "#666666",
-      textOnCard: "#1a1a1a",
-      cardBg: "#ffffff",
-      cardBorder: "#000000",
-    },
-    card: { radius: 4, style: "brutal" },
-    fonts: { display: "russoOne", body: "notoSansSC", mono: "spaceGrotesk" },
-    subtitle: {
-      bg: "rgba(0,0,0,0.88)",
-      text: "#FFEB3B",
-      border: "2px solid #FF5252",
-    },
-  },
-
-  /* ---------- Zen Garden (organic biophilic, natural calm) ---------- */
-  "zen-garden": {
-    id: "zen-garden",
-    mode: "light",
-    bg: {
-      base: "#f5f5f0",
-      gradient:
-        "linear-gradient(170deg, #fafaf5 0%, #f0f0e8 40%, #e8e8df 100%)",
-      meshColors: [
-        "rgba(74,124,89,0.07)",
-        "rgba(139,160,122,0.05)",
-      ],
-      particleColor: "none",
-      gridOpacity: 0,
-    },
-    colors: {
-      accent: "#4A7C59",
-      accent2: "#2D372C",
-      accent3: "#8BA07A",
-      glow: "rgba(74,124,89,0.18)",
-      textPrimary: "#2D372C",
-      textSecondary: "#556B55",
-      textMuted: "#587058",
-      textOnCard: "#fafaf5",
-      cardBg: "rgba(255,255,252,0.92)",
-      cardBorder: "rgba(74,124,89,0.12)",
-    },
-    card: { radius: 14, style: "solid" },
-    fonts: { display: "notoSerifSC", body: "notoSansSC", mono: "spaceGrotesk" },
-    subtitle: {
-      bg: "rgba(45,55,44,0.82)",
-      text: "#f5f5f0",
-      border: "1px solid rgba(74,124,89,0.25)",
-    },
-  },
-
   /* ---------- Retro Sunset (vaporwave sunset, retro vibes) ---------- */
   "retro-sunset": {
     id: "retro-sunset",
@@ -377,38 +299,6 @@ export const THEMES: Record<TemplateId, Theme> = {
       bg: "rgba(30,27,46,0.70)",
       text: "#FFFFFF",
       border: "1px solid rgba(124,58,237,0.25)",
-    },
-  },
-
-  /* ---------- Mono Press (pure B&W high-contrast editorial) ---------- */
-  "mono-press": {
-    id: "mono-press",
-    mode: "light",
-    bg: {
-      base: "#FBFAF6",
-      gradient: "linear-gradient(180deg, #FFFFFF 0%, #FBFAF6 100%)",
-      meshColors: ["rgba(0,0,0,0.012)", "rgba(0,0,0,0.008)"],
-      particleColor: "none",
-      gridOpacity: 0,
-    },
-    colors: {
-      accent: "#111111",
-      accent2: "#3A3A3A",
-      accent3: "#6B6B6B",
-      glow: "rgba(0,0,0,0.08)",
-      textPrimary: "#0A0A0A",
-      textSecondary: "#4A4A4A",
-      textMuted: "#6e6e6e",
-      textOnCard: "#FFFFFF",
-      cardBg: "#FFFFFF",
-      cardBorder: "#0A0A0A",
-    },
-    card: { radius: 2, style: "paper" },
-    fonts: { display: "playfairDisplay", body: "notoSerifSC", mono: "jetBrainsMono" },
-    subtitle: {
-      bg: "rgba(10,10,10,0.88)",
-      text: "#FFFFFF",
-      border: "2px solid #0A0A0A",
     },
   },
 
