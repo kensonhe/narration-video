@@ -263,14 +263,20 @@ on-screen text, subtitles, the `description`, or cover fields:**
 
 - **Naming specific external platforms as destinations** — no "GitHub", "Gitee", "Google",
   "npm", "PyPI", "Docker Hub", "Hugging Face", "ModelScope", etc. as places the viewer should
-  go. Example violations: "在 GitHub 上搜索 xxx", "去 Gitee 下载", "npm install xxx",
-  "打开 GitHub 搜索这个仓库".
+  go. Example violations: "在 GitHub 上搜索 xxx", "去 Gitee 下载", "打开 GitHub 搜索这个仓库".
 - **"Search for it" directives** — no "搜索 xxx 就能找到", "Google 一下", "去搜一下这个项目".
   These signal off-platform traffic and classifiers flag them.
-- **Download/install instructions** — no "运行 pip install xxx", "克隆这个仓库", "下载这个工具".
-  Even without a URL, these tell the viewer to leave the platform.
 - **Repository/project names as CTAs** — no "项目地址在 xxx-repo", "仓库名叫 yyy". Naming a repo
   is effectively the same as giving a link — the viewer will search for it, and the platform knows.
+
+> **Exception — package-install commands are allowed.** Concrete install commands such as
+> `pip install xxx`, `npm install xxx`, `npx xxx`, `pnpm add xxx`, `yarn add xxx`, `uv add xxx`
+> **may appear in narration `text`, on-screen text, and subtitles.** They read as practical
+> how-to for the viewer, not as an off-platform CTA, so they don't trigger 限流. This exception
+> is scoped to those three fields only — the `description` publish caption and the cover fields
+> (`coverTitle`/`coverSubtitle`/`coverTag`) must still stay free of install commands. And the
+> exception covers the install command itself, *not* "go to npm/GitHub and search for it" phrasing,
+> which remains banned.
 
 #### Safe alternatives — how to handle content that references external tools/resources
 
@@ -280,16 +286,16 @@ video audience** using these patterns:
 | Article says | ❌ Bad (限流) | ✅ Safe (use these) |
 |---|---|---|
 | "The project is on GitHub at user/repo" | "去 GitHub 搜 user/repo" | Simply **omit** the location; describe what the tool does |
-| "Install with `pip install xxx`" | "运行 pip install xxx" | "这个工具叫 xxx，可以直接使用" |
+| "Install with `pip install xxx`" | "去 PyPI 页面下载" | ✅ "运行 `pip install xxx`" is fine (install command allowed) |
 | "Clone the repo from GitHub" | "打开 GitHub 克隆仓库" | "作者已经开放使用，感兴趣的朋友可以了解一下" |
-| "Available on npm as @pkg" | "在 npm 搜索 @pkg" | "这个工具已经公开发布，名字就叫 @pkg" |
+| "Available on npm as @pkg" | "在 npm 搜索 @pkg" | ✅ "安装命令 `npm install @pkg`" is fine (install command allowed) |
 | "See the documentation at docs.xxx.com" | "去 docs.xxx.com 查看" | "具体用法可以自行搜索关键词「xxx」" (vague enough to pass) |
 
 **Key principle**: The video should be **self-contained** — the viewer learns something useful
-without needing to go anywhere. If a tool or project is central to the topic, mention its **name**
-and **what it does**, but never **where to find it** or **how to install it**. Let the viewer's
-curiosity do the work — they'll search on their own if interested, and the platform doesn't see
-an off-platform CTA.
+without needing to go anywhere. If a tool or project is central to the topic, mention its **name**,
+**what it does**, and (if helpful) **the install command** — but never point the viewer to an
+external platform to "go find it". Let the viewer's curiosity do the work — they'll search on their
+own if interested, and the platform doesn't see an off-platform CTA.
 
 #### The `description` field also needs to be clean
 
@@ -347,9 +353,11 @@ reads as manipulative and erodes trust.
 
 **Before moving to Phase 3**: scan every scene `text`, the cover fields, the `description`, and
 any planned on-screen labels for: (1) URLs or bare domains, (2) mentions of GitHub/Gitee/npm/PyPI
-or any external platform as a destination, (3) install/search directives ("搜索 xxx", "pip install",
-"克隆仓库"), (4) repository or project names used as CTAs. Any of these can trigger platform
-限流 — fix them all now, not after the render completes.
+or any external platform as a *destination* ("去 xxx 搜/下载"), (3) "search for it" directives
+("搜索 xxx", "去搜一下"), (4) repository or project names used as CTAs. Any of these can trigger
+platform 限流 — fix them all now, not after the render completes. **Note:** package-install commands
+(`pip install`, `npm install`, `npx …`) are *allowed* in scene `text`/on-screen text/subtitles and
+are not a defect — only keep them out of the `description` and cover fields.
 
 ---
 

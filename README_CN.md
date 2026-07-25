@@ -243,19 +243,21 @@ npx remotion render src/index.ts NarrationVideo out/narration-video.mp4 --codec=
 
 - **URL 和裸域名** — `https://...`、`www.xxx.com`、`xxx.com`
 - **外部平台名作为目的地** — GitHub、Gitee、npm、PyPI、Docker Hub、Hugging Face 等
-- **搜索/下载引导** — "搜索 xxx"、"pip install xxx"、"克隆这个仓库"
+- **"搜一下"引导** — "搜索 xxx"、"去 GitHub 搜"、"克隆这个仓库"
 - **仓库名作为行动号召** — "项目地址在 xxx-repo"
+
+> **允许：** 安装命令（`pip install xxx`、`npm install xxx`、`npx xxx`）可以出现在旁白、字幕和画面文字里 —— 它们是实用操作指引，不算跳站引导，不会触发限流。只需保证发布文案（`description`）和封面字段里不出现即可。
 
 **安全改写示例：**
 
 | 原文提到 | ❌ 会被限流 | ✅ 安全替代 |
 |---|---|---|
 | "项目在 GitHub 上" | "去 GitHub 搜" | 只描述工具功能，不提位置 |
-| "用 `pip install xxx` 安装" | "运行 pip install xxx" | "这个工具叫 xxx，可以直接使用" |
+| "用 `pip install xxx` 安装" | "去 PyPI 页面下载" | ✅ 直接说"运行 `pip install xxx`"即可（安装命令已允许） |
 | "克隆仓库" | "打开 GitHub 克隆仓库" | "作者已经开放使用" |
 | "文档在 docs.xxx.com" | "去 docs.xxx.com 查看" | "具体用法可以搜索关键词「xxx」" |
 
-核心原则：视频**自包含** — 只提工具名称和功能，不提在哪里找、怎么安装。渲染前会自动扫描，确保没有遗漏的违规内容。
+核心原则：视频**自包含** — 提工具名称、功能和安装命令都可以，但不要引导观众"去某个外部平台找它"。渲染前会自动扫描，确保没有遗漏的违规内容。
 
 ## 常见问题
 

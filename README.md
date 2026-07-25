@@ -243,15 +243,17 @@ Video platforms (Douyin, Bilibili, Xiaohongshu, WeChat Video) actively demote or
 
 - **URLs and bare domains** — `https://...`, `www.xxx.com`, `xxx.com`
 - **External platform names as destinations** — GitHub, Gitee, npm, PyPI, Docker Hub, Hugging Face, etc.
-- **Search/download directives** — "搜索 xxx", "pip install xxx", "clone this repo"
+- **"Search for it" directives** — "搜索 xxx", "去 GitHub 搜", "clone this repo"
 - **Repository names used as CTAs** — "项目地址在 xxx-repo"
+
+> **Allowed:** package-install commands (`pip install xxx`, `npm install xxx`, `npx xxx`) may appear in narration, subtitles, and on-screen text — they read as practical how-to, not an off-platform CTA. Keep them out of the `description` caption and cover fields only.
 
 **Safe rewriting examples:**
 
 | Source article says | ❌ Gets flagged | ✅ Safe alternative |
 |---|---|---|
 | "The project is on GitHub" | "去 GitHub 搜" | Describe what the tool does, omit the location |
-| "Install with `pip install xxx`" | "运行 pip install xxx" | "这个工具叫 xxx，可以直接使用" |
+| "Install with `pip install xxx`" | "去 PyPI 页面下载" | ✅ "运行 `pip install xxx`" is fine (install command allowed) |
 | "Clone the repo" | "打开 GitHub 克隆仓库" | "作者已经开放使用" |
 | "See docs at docs.xxx.com" | "去 docs.xxx.com 查看" | "具体用法可以搜索关键词「xxx」" |
 
