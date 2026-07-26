@@ -1,4 +1,4 @@
-import { AbsoluteFill, Sequence, staticFile } from "remotion";
+import { AbsoluteFill, Sequence, staticFile, interpolate } from "remotion";
 import { Audio } from "@remotion/media";
 import { Subtitles, ThemeProvider, type SubtitleData } from "./components/SharedComponents";
 import { getTheme, type TemplateId } from "./components/themes";
@@ -29,6 +29,16 @@ export interface VideoProps {
   subtitles?: SubtitleData[]; // Per-scene subtitle data
   templateId?: TemplateId;    // Active visual template (from video.config.json)
   orientation?: "landscape" | "portrait";
+  sound?: SoundConfig;        // Optional BGM + transition SFX (from video.config.json)
+}
+
+// Optional sound layer. All fields are opt-in — when a path is null/absent, that
+// audio element is simply not rendered, so a missing file never breaks the render.
+export interface SoundConfig {
+  bgm?: string | null;         // path under public/, e.g. "audio/bgm/track.mp3"; null = no BGM
+  bgmVolume?: number;          // steady BGM level, ducked well under the voice (default 0.1)
+  transitionSfx?: string | null; // path under public/, played at each scene start; null = off
+  transitionVolume?: number;   // SFX level (default 0.3)
 }
 
 // =====================================================
@@ -65,14 +75,44 @@ export const NarrationVideo: React.FC<VideoProps> = ({
   subtitles,
   templateId,
   orientation = "landscape",
+  sound,
 }) => {
   const totalScenes = sceneFrames.length;
   const theme = getTheme(templateId);
   const isPortrait = orientation === "portrait";
 
+  // Total timeline length, used for the BGM fade-out envelope.
+  const totalFrames = sceneFrames.reduce((sum, s) => sum + s.duration, 0);
+
+  // BGM: one track under the whole video, ducked well below the voice so narration
+  // stays intelligible, with a 1s fade-in and ~1.7s fade-out envelope. Only rendered
+  // when a path is configured — a missing/absent file leaves the video voice-only.
+  const bgmPath = sound?.bgm;
+  const bgmVolume = sound?.bgmVolume ?? 0.1;
+  const FADE_IN = 30;   // 1s
+  const FADE_OUT = 50;  // ~1.7s
+  const transitionSfx = sound?.transitionSfx;
+  const transitionVolume = sound?.transitionVolume ?? 0.3;
+
   return (
     <ThemeProvider theme={theme}>
       <AbsoluteFill style={{ backgroundColor: theme.bg.base }}>
+        {/* Background music bed (optional) — spans the entire timeline, auto-ducked
+            under the voice via a low steady volume + fade in/out envelope. */}
+        {bgmPath && (
+          <Audio
+            src={staticFile(bgmPath)}
+            volume={(f) =>
+              interpolate(
+                f,
+                [0, FADE_IN, totalFrames - FADE_OUT, totalFrames],
+                [0, bgmVolume, bgmVolume, 0],
+                { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+              )
+            }
+          />
+        )}
+
         {sceneFrames.map((sf, i) => {
           const SceneComponent = SCENE_COMPONENTS[i];
           if (!SceneComponent) return null;
@@ -94,6 +134,12 @@ export const NarrationVideo: React.FC<VideoProps> = ({
                 sceneIndex={i}
                 totalScenes={totalScenes}
               />
+
+              {/* Transition SFX (optional) — a short whoosh/soft cut at each scene
+                  start (skipped on scene 1 so it doesn't fight the opening hook). */}
+              {transitionSfx && i > 0 && (
+                <Audio src={staticFile(transitionSfx)} volume={transitionVolume} />
+              )}
 
               {/* Scene audio */}
               <Audio

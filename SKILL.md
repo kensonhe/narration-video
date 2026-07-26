@@ -90,14 +90,25 @@ Store the answers — they become `video.config.json`:
   "template": "clean-light",
   "voice": { "voiceId": "audiobook_male_1", "speed": 1.0, "pitch": 0 },
   "duration": "standard",
-  "subtitles": true
+  "subtitles": true,
+  "sound": {
+    "bgm": null,
+    "bgmVolume": 0.1,
+    "transitionSfx": null,
+    "transitionVolume": 0.3
+  }
 }
 ```
 
 The setup script (Phase 3) copies a default `video.config.json`; **overwrite it with the user's
 choices** before generating audio or rendering. The whole pipeline reads this one file:
-`Root.tsx` (orientation + template + subtitles), `generate-audio.ts` (voice). The API key is critical — don't
+`Root.tsx` (orientation + template + subtitles + sound), `generate-audio.ts` (voice). The API key is critical — don't
 proceed without it.
+
+The `sound` block is optional and defaults to voice-only (both paths `null`). See
+"Sound design (BGM + SFX)" in Phase 3 for when and how to turn it on — background music is
+one of the biggest levers on how polished a short-form video feels, so it's worth enabling
+whenever you have a suitable track.
 
 ---
 
@@ -379,7 +390,41 @@ reads as manipulative and erodes trust.
 | N-1 | Synthesis | Tie it all together |
 | N | Closing | Resolve the opening hook and deliver the promised payoff; CTA must be platform-safe (no external-platform mentions — see "Platform-safe content") |
 
+### Energy arc (能量曲线) — shape the whole video, not just each scene
+
+A good short-form video isn't a flat sequence of equally-weighted scenes; it has a
+*shape*. Think of the whole thing as one energy curve: grab hard, then vary the intensity
+so the viewer never settles into boredom, and finish on the highest note. Videos that hold
+attention almost always follow this arc:
+
+- **Open at high energy (scene 1).** The hook isn't a warm-up — it's near the peak. Big
+  visual, bold claim, immediate stakes. You're spending energy to buy the next 10 seconds.
+- **Alternate, don't plateau (body).** Back-to-back high-intensity scenes exhaust the
+  viewer as much as back-to-back flat ones bore them. Alternate: a punchy reveal scene, then
+  a calmer explain scene, then another spike. The *contrast* is what keeps it feeling alive
+  — a calm beat makes the next 爽点 hit harder. Roughly every 2–3 scenes, land a distinct
+  payoff (a number, a reframe, a before/after) as a local peak.
+- **One signature move per idea, never repeated as the star.** Pick a different dominant
+  visual treatment for each key scene (a big counter, a comparison split, a card stack, a
+  quote card). If two scenes lean on the same animation as their centerpiece, the second one
+  reads as filler — vary it or cut it.
+- **Finish at the peak (closing).** The last scene should be the highest-energy moment, not
+  a fade-out — it resolves the opening hook and delivers the promised payoff. A strong, felt
+  ending is what drives replays, likes, and comments (all of which the algorithm rewards). A
+  limp "谢谢观看" ending throws away the retention you fought for.
+
+Concretely, when laying out scenes: sketch the intended energy level (high / medium / high /
+medium / peak …) alongside the scene list *before* writing components, and make sure no long
+stretch sits at one level. This is the single biggest lever on whether a video feels
+"crafted" versus "a slideshow with narration."
+
 **Before moving to Phase 3**: scan every scene `text`, the cover fields, the `description`, and
+any planned on-screen labels for: (1) URLs or bare domains, (2) mentions of GitHub/Gitee/npm/PyPI
+or any external platform as a *destination* ("去 xxx 搜/下载"), (3) "search for it" directives
+("搜索 xxx", "去搜一下"), (4) repository or project names used as CTAs. Any of these can trigger
+platform 限流 — fix them all now, not after the render completes. **Note:** package-install commands
+(`pip install`, `npm install`, `npx …`) are *allowed* in scene `text`/on-screen text/subtitles and
+are not a defect — only keep them out of the `description` and cover fields.
 any planned on-screen labels for: (1) URLs or bare domains, (2) mentions of GitHub/Gitee/npm/PyPI
 or any external platform as a *destination* ("去 xxx 搜/下载"), (3) "search for it" directives
 ("搜索 xxx", "去搜一下"), (4) repository or project names used as CTAs. Any of these can trigger
@@ -534,14 +579,108 @@ If a card would need 4+ bullets below 34px to fit, cut to 2–3 and raise the
 size — dense small text is exactly the "can't read it" complaint. The
 one-idea-per-scene rule already keeps text short; now make what's left big.
 
-**Animation rules**:
-- Use `spring()` for scale/position (bouncy, physical feel)
-- Use `interpolate()` for opacity fades (smooth)
-- Stagger child elements with `delay` offsets (10-15 frames apart)
-- Always `extrapolateRight: "clamp"` to prevent value overshoot
-- Never use CSS animations — they flicker in Remotion renders
+**Animation rules** — cheap-looking motion is the fastest way to make a video feel
+amateur. The difference between "PPT with a voiceover" and something that feels crafted
+is almost entirely in *how* things move. A few principles carry most of the weight:
+
+- **Speed comes from acceleration, never from constant velocity.** Anything that moves at
+  a steady linear rate reads as a cheap slide transition. Drive scale/position with
+  `spring()` (physical, eased) and opacity with `interpolate()` using a bezier ease, never
+  a straight ramp. A fly-in should start slow, rush, and settle — not glide at one speed.
+- **Land with weight (overshoot).** Elements that "arrive" (cards dropping in, a number
+  counting up and stopping, a title stamping down) feel real when they slightly overshoot
+  and settle back. With `spring()`, use a config that overshoots (lower `damping`, e.g.
+  `{ damping: 12, stiffness: 120 }`) for landing motions; use non-overshooting easing for
+  calm fades/pushes. Match the bounce to the topic — playful content bounces more, serious
+  content barely at all.
+- **Stagger, don't group-blast.** When several items enter (a list, a grid, bullet points),
+  offset each by 8–15 frames so they cascade. Everything appearing on the same frame reads
+  flat. For a *fast* cascade (爽点 moment), tighten the stagger as it goes — items arrive
+  faster and faster, then the whole set holds still for ~15 frames. That acceleration is
+  what makes a list reveal feel satisfying instead of mechanical.
+- **Let key info breathe.** After the main element of a scene lands (the headline, the big
+  number, the punchline card), hold it *completely still* for a beat before anything else
+  moves or the scene ends. Motion that never rests reads as noise. The one moment most worth
+  a held pause is whatever you want the viewer to remember.
+- **Fly-ins must land in a real slot.** An element that animates in should settle into an
+  actual position in the layout (its grid cell, its place in the stack), not hover
+  ambiguously over the scene. Motion toward a real destination looks intentional; motion
+  that stops in mid-air looks like a bug.
+- **Light effects: restraint.** Glints, sweeps, and glows are cheap-looking when sprayed on
+  every element. At most one accent light effect per scene, on the single most important
+  element — and clip it inside the element's `border-radius`/`overflow` (a glow spilling
+  past a rounded corner is a classic tell). Batch elements should earn attention through
+  *movement*, not by each one flashing.
+- **Keep the "camera" stable.** No handheld-style jitter or drift on the whole frame for
+  explainer content — it fights readability. Movement should belong to individual elements,
+  not the viewport.
+- **Mechanics**: always `extrapolateRight: "clamp"` (and `extrapolateLeft` where relevant)
+  to stop values overshooting into garbage; never use CSS `@keyframes`/`transition` — they
+  flicker in Remotion renders because they're not frame-driven. All motion must be a pure
+  function of `useCurrentFrame()`.
+
+**Deterministic rendering (hard rule)** — every frame must render identically each time,
+or the video flickers and re-renders drift. Never call `Date.now()`, `Math.random()`, or
+argless `new Date()` inside scene code (Remotion re-runs your component per frame, so these
+produce different values each call → visible jitter). When you need randomness (particle
+positions, jitter, scatter), derive it deterministically from a fixed seed — e.g. a small
+seeded PRNG keyed off the scene index and element index:
+
+```tsx
+// mulberry32 — deterministic, seedable. Same seed → same sequence every render.
+const rand = (seed: number) => { let t = seed + 0x6d2b79f5; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+const particles = Array.from({ length: 20 }, (_, i) => ({ x: rand(sceneIndex * 100 + i) * width, y: rand(sceneIndex * 100 + i + 50) * height }));
+```
 
 **Subtitle-safe zone**: When subtitles are enabled (`subtitles: true` in config), they render at the bottom of the screen (landscape `bottom: 100px`, portrait `bottom: 220px`, semi-transparent background) at 44px (landscape) / 54px (portrait). Keep scene content clear of the bottom ~190px (landscape) / ~330px (portrait) to avoid overlap — use `padding-bottom` on scene content containers accordingly. When subtitles are disabled, the full screen area is available.
+
+### 3g. Sound design (BGM + SFX) — optional but high-impact
+
+Background music is one of the biggest levers on how "produced" a short-form video feels.
+A silent explainer with only a voice reads as flat; the same video over a steady beat feels
+like content people expect on 抖音/B站. Turn it on whenever you have a suitable track — it's
+the cheapest quality upgrade available. Sound is controlled entirely by the `sound` block in
+`video.config.json`; the template renders it, so you don't write any audio code:
+
+```json
+"sound": {
+  "bgm": "audio/bgm/track.mp3",     // path under public/; null = no music (voice only)
+  "bgmVolume": 0.1,                  // steady level UNDER the voice — keep it low (see below)
+  "transitionSfx": "audio/sfx/whoosh.mp3", // plays at each scene start; null = off
+  "transitionVolume": 0.3
+}
+```
+
+**How it behaves** (all handled by `Video.tsx`):
+- **BGM** plays under the entire video with a 1s fade-in and ~1.7s fade-out. It's *ducked*
+  to a low steady volume so it never competes with the narration.
+- **Transition SFX** fires a short sound at the start of each scene *except scene 1* (so it
+  doesn't step on the opening hook).
+- **Missing files are safe** — if a path is `null` or the file doesn't exist, that layer is
+  simply not rendered. The render never breaks over audio.
+
+**The one rule that matters — duck the music hard.** Unlike a pure product promo (where BGM
+can sit around 0.34), our videos are narration-first: the voice must always win. Keep
+`bgmVolume` in the **0.06–0.12** range. If you can't cleanly hear every word over the music
+in the still-frame QA render, it's too loud — lower it. A track with heavy melody or vocals
+fights the voice even when quiet; prefer **instrumental, beat-driven** music (light
+tech-house, lo-fi, ambient percussion) that adds energy without demanding attention.
+
+**Choosing a track to match the theme/topic**: fast, upbeat beat for energetic tech/business
+content; calmer lo-fi/ambient for reflective or 治愈 topics. Match the music's energy curve
+to the video's energy arc — it should feel like it belongs to the same piece.
+
+**Sourcing audio (the skill ships no audio files)**: BGM/SFX are not bundled — you provide
+them. Point `bgm`/`transitionSfx` at files you place under the project's `public/` directory
+(e.g. `public/audio/bgm/track.mp3` → `"bgm": "audio/bgm/track.mp3"`). Only use tracks you're
+licensed to use; for royalty-free commercial-use options, Mixkit and incompetech (CC-BY,
+requires attribution) are common sources. If the user hasn't supplied music, either ask
+whether they want to add a track, or proceed voice-only (`"bgm": null`) — both are valid.
+
+**Order of operations**: add sound *after* the visuals and scene timing are settled. Because
+BGM is envelope-based (spans the whole timeline) and SFX auto-fire at scene boundaries, you
+don't have to re-time anything when scenes change — but there's no point picking a track
+before you know the video's length and energy shape.
 
 ---
 
@@ -628,12 +767,46 @@ Use `MINIMAX_API_BASE="https://api.minimaxi.com/v1"` (note the extra 'i' in mini
 
 ## Phase 5: Render Video + Cover
 
+### 5a. Still-frame QA first (cheap check before the expensive render)
+
+A full render takes 3–8 minutes; a still frame is near-instant. So *before* committing to
+the full render, spot-check each scene with a single still. This catches the problems that
+are obvious the moment you look but invisible in code — text overflowing its card, content
+colliding with the subtitle zone, an element off-center, unreadable contrast, a layout that
+broke in portrait. Finding these now saves a wasted 5-minute render (and finding them
+yourself is far better than the user finding them in the delivered video).
+
+```bash
+cd <project-dir>
+# Render one representative frame from each scene into out/qa/.
+# Pick a frame ~60 frames into each scene (past the entrance animation, content settled).
+# Scene start frames are the cumulative durations from narration.json's audioDuration.
+npx remotion still src/index.ts NarrationVideo out/qa/scene01.png --frame=60
+npx remotion still src/index.ts NarrationVideo out/qa/scene02.png --frame=<scene2_start+60>
+# ... one per scene
+```
+
+Then **read the PNGs** (use the Read tool on each — they're images) and check each frame:
+
+- **Text fits and is readable** — no clipping past card edges, no overflow, contrast holds.
+- **Nothing collides with the subtitle-safe zone** — bottom ~190px landscape / ~330px portrait.
+- **Composition is centered/intentional** — especially the cover and title scenes.
+- **Portrait layouts didn't break** — content stays in the central column, nothing cramped.
+- **Text is sharp** — if any text looks blurry, it's usually an image/scale issue, not the font.
+
+Fix anything you spot in the scene components, re-shoot just those stills, and only then
+proceed to the full render. Also render and eyeball the cover this way:
+
+```bash
+npx remotion still src/index.ts Cover out/cover.png
+```
+
+### 5b. Full render
+
 ```bash
 cd <project-dir>
 # Render the video
 npx remotion render src/index.ts NarrationVideo out/narration-video.mp4 --codec=h264 --crf=18
-# Render the cover image
-npx remotion still src/index.ts Cover out/cover.png
 ```
 
 If Chrome was not auto-copied from cache (e.g., first-time setup without VPN), Remotion will download it automatically on first render. You can also point to a cached Chrome binary:
@@ -689,6 +862,9 @@ Opens Remotion Studio at `http://localhost:3000`. Use it to scrub through scenes
 | Image download fails (403/timeout) | Some sites block direct downloads — try Playwright to save images instead |
 | Image not showing in scene | Verify `image` field in narration.json is set (run download-images.ts first) |
 | Image appears stretched | Use `fit="contain"` on SceneImage, or set explicit width/height via `style` prop |
+| BGM drowns out the narration | Lower `sound.bgmVolume` (target 0.06–0.12); prefer instrumental tracks without vocals/heavy melody |
+| BGM/SFX not playing | Check the path is relative to `public/` (e.g. `"audio/bgm/x.mp3"`, not an absolute path) and the file exists — missing files are silently skipped by design |
+| Music keeps playing over a beat it should stop | BGM spans the whole timeline with a fade-out; it's intentional. To end music early, trim the source file |
 
 ---
 
@@ -708,13 +884,13 @@ Opens Remotion Studio at `http://localhost:3000`. Use it to scrub through scenes
 │       ├── SharedComponents.tsx  # Theme-aware BoldCard, DarkCard, SceneImage, etc.
 │       └── themes.ts             # 6 template definitions + useTheme source
 ├── public/
-│   ├── audio/                # Generated mp3 files
+│   ├── audio/                # Generated narration mp3s (sceneXX.mp3); bgm/ + sfx/ if sound enabled
 │   └── images/               # Downloaded article images
 ├── scripts/
 │   ├── generate-audio.ts     # MiniMax TTS script (reads voice from config)
 │   └── download-images.ts    # Article image downloader (reads imageUrl from narration.json)
 ├── narration.json            # Narration text + durations + image paths + cover data
-├── video.config.json         # orientation / template / voice / duration / subtitles
+├── video.config.json         # orientation / template / voice / duration / subtitles / sound
 ├── remotion.config.ts
 ├── tsconfig.json
 ├── package.json

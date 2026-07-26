@@ -14,6 +14,12 @@ import { getTheme, type FontRole } from "./components/themes";
 const theme = getTheme((config as { template?: string }).template);
 const orientation = (config as { orientation?: string }).orientation === "portrait" ? "portrait" : "landscape";
 const subtitlesEnabled = (config as { subtitles?: boolean }).subtitles !== false; // default: true
+const sound = (config as { sound?: {
+  bgm?: string | null;
+  bgmVolume?: number;
+  transitionSfx?: string | null;
+  transitionVolume?: number;
+} }).sound; // optional BGM + transition SFX; undefined = voice-only
 const WIDTH = orientation === "portrait" ? 1080 : 1920;
 const HEIGHT = orientation === "portrait" ? 1920 : 1080;
 
@@ -171,6 +177,7 @@ export const RemotionRoot: React.FC = () => {
           subtitles,
           templateId: theme.id,
           orientation,
+          sound,
         }}
       />
       <Composition

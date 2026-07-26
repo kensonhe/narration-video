@@ -7,5 +7,11 @@
     "pitch": 0
   },
   "duration": "standard",
-  "subtitles": true
+  "subtitles": true,
+  "sound": {
+    "bgm": null,
+    "bgmVolume": 0.1,
+    "transitionSfx": null,
+    "transitionVolume": 0.3
+  }
 }
