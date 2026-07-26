@@ -232,10 +232,29 @@ genuine visual value (typically 30–60% of scenes). When assigning images:
 
 ### Writing guidelines for each scene's `text`:
 
-- **Length**: 50-120 Chinese characters per scene (~15-30 seconds of audio)
-- **Tone**: Conversational, like a knowledgeable friend explaining something
-- **Structure**: One clear idea per scene, with a natural transition to the next
-- **Avoid**: Reading slides verbatim, jargon without explanation, walls of text, any links/URLs, and any mention of external platforms (GitHub, npm, PyPI, etc.) as places to find resources — see "Platform-safe content" below
+Short-form video lives and dies by pacing. On 抖音/小红书/视频号 the audience is one thumb-flick
+from leaving, so every sentence has to earn the next few seconds. Write for the ear and the scroll,
+not the page:
+
+- **Length**: 40–90 Chinese characters per scene (~12–22 seconds of audio). Shorter than long-form —
+  a scene that runs long invites the scroll. If a scene needs more than ~90 characters, it's really
+  two ideas; split it.
+- **Tone**: Conversational, like a sharp friend who gets to the point — knowledgeable but never
+  lecturing.
+- **Fast rhythm (节奏快)**: Prefer short, punchy sentences over long clauses. Cut connective filler
+  ("那么"、"其实呢"、"我们可以看到"、"值得一提的是") — it's dead air that TTS reads slowly and
+  viewers tune out. One breath, one point, then move.
+- **Concise phrasing (表述简洁)**: Say it in the fewest words that still land. Replace abstract
+  windups with the concrete claim. Bad: "在当今这个快速发展的时代，我们不难发现一个现象……".
+  Good: "有个现象你肯定见过：……". If a sentence survives being cut in half, cut it.
+- **Frequent payoffs (爽点多)**: Give the viewer a small "啊，原来如此" or "有点东西" moment every
+  1–2 scenes — a surprising number, a sharp reframe, a myth busted, a concrete before/after, a
+  counterintuitive result. A stretch of pure setup with no payoff is where people leave. Front-load
+  the conclusion, then explain — don't make them wait through reasoning to reach the point.
+- **Structure**: One clear idea per scene, ending on a beat that pulls into the next.
+- **Avoid**: Reading slides verbatim, jargon without explanation, walls of text, slow throat-clearing
+  intros, any links/URLs, and any mention of external platforms (GitHub, npm, PyPI, etc.) as places
+  to find resources — see "Platform-safe content" below
 - **Total**: match the duration preset — `glance` 400–600 chars, `standard` 900–1200, `deep` 1500–2000
 
 ### Platform-safe content — no links, no external-platform guidance
@@ -303,24 +322,33 @@ The publish caption (`description`) is scanned too. No "GitHub 链接在评论�
 no "回复 xxx 获取下载地址". These all trigger demotion. Keep the description purely about the
 **content value** + trending hashtags.
 
-### Opening hook (开头钩子) — required
+### Opening hook (开头钩子) — the single most important thing
 
-The first 3–5 seconds are make-or-break. On 抖音/小红书/视频号 a viewer decides whether to keep
-watching or scroll past within those first seconds, so the opening scene's `text` *must* grab
-them and give them a reason to stay. This is the single highest-leverage moment in the whole
-video — a weak open wastes every scene after it. Don't open with the flat "今天我们来聊...".
-Lead instead with one of:
+The first 2 seconds decide everything. On 抖音 the drop-off rate in the first two seconds is
+brutal — most viewers who leave are gone before the video really starts. So the opening isn't a
+warm-up; it *is* the pitch. The pipeline now starts the voice almost immediately (only ~0.3s of
+lead-in), which means the very first words the viewer hears must already be the hook.
 
-- **A contrarian claim** — "你以为 X 是对的？其实恰好相反。"
-- **A surprising number** — "99% 的人没注意到，这个细节正在..." (let the number do the work)
-- **A stakes question** — "如果你正在做 X，这90秒可能帮你省下三年弯路。"
-- **A mystery box** — "看到最后你会发现，整件事的真相其实只有一句话。" (teases a payoff
-  that keeps them watching to the end)
-- **A relatable pain** — "你是不是也遇到过：...？" (the viewer recognizes themselves and stays)
+**Rule 1 — the hook is the first sentence, with zero windup.** The first thing spoken must be the
+attention-grab itself. No "今天我们来聊..."、"大家好"、"在开始之前"、"最近有个话题很火" — every one
+of those burns the two seconds you can't afford. Open cold, mid-punch. The viewer should feel they
+walked in on the most interesting moment.
 
-Pair the verbal hook with a visual one: the first frame of scene 1 should be visually striking
-(a bold card, a big number, a provocative question on screen) — not a slow fade-in on empty
-space. The cover title and the opening line should hit the same nerve from two angles.
+- ❌ "今天我想和大家聊聊人工智能对就业的影响。" (windup — the hook doesn't arrive until after they've left)
+- ✅ "这三类工作，可能三年内就没了——而且大部分人还没反应过来。" (the stakes hit in word one)
+
+**Rule 2 — lead with one of these openers**, sharpened to land in a single short sentence:
+
+- **A contrarian claim** — "你以为 X 是对的？正好相反。"
+- **A surprising number** — "99% 的人没注意到这个细节，但它正在……" (let the number do the work)
+- **A stakes question** — "正在做 X？这条视频可能帮你省下三年弯路。"
+- **A mystery box** — "看到最后你会发现，真相其实只有一句话。" (teases a payoff that holds them to the end)
+- **A relatable pain** — "你是不是也这样：……？" (the viewer recognizes themselves and stays)
+
+**Rule 3 — pair the verbal hook with an instant visual hook.** The first frame of scene 1 must be
+striking from frame 0 (a bold card, a big number, a provocative question on screen) — not a slow
+fade-in on empty space. Because the voice now starts at ~0.3s, the visual and the spoken hook land
+together. The cover title and the opening line should hit the same nerve from two angles.
 
 The hook must stay true to the article — promise only what the video actually delivers. Clickbait
 that doesn't pay off loses the viewer at the letdown and kills completion rate, which is the
@@ -345,9 +373,9 @@ reads as manipulative and erodes trust.
 
 | Scene | Purpose | Content |
 |-------|---------|---------|
-| 1 | Hook | Earn attention in the first 3–5s — follow "Opening hook" above; no flat "今天我们聊..." intros |
-| 2 | Framework | Lay out the mental model or structure |
-| 3-N-2 | Body | One key idea per scene, with examples |
+| 1 | Hook | Win the first 2 seconds — the first spoken sentence IS the hook, no windup (see "Opening hook"). Never "今天我们聊..." |
+| 2 | Framework | Lay out the mental model or structure — quickly, then move |
+| 3-N-2 | Body | One key idea per scene, each landing a payoff (爽点) — surprising number, sharp reframe, myth busted |
 | N-1 | Synthesis | Tie it all together |
 | N | Closing | Resolve the opening hook and deliver the promised payoff; CTA must be platform-safe (no external-platform mentions — see "Platform-safe content") |
 
@@ -560,7 +588,7 @@ The generation process:
 
 1. **Text splitting**: Each scene's narration text is split by Chinese punctuation marks (。！？；：). Sentences longer than 24 characters are further split at ~20-character boundaries.
 2. **Timing distribution**: Segments are distributed evenly across the audio duration. If a scene has 15 seconds of audio and 5 subtitle segments, each segment shows for ~3 seconds.
-3. **Frame calculation**: Each segment gets a `startFrame` and `endFrame` relative to the scene start. The first segment begins at `AUDIO_OFFSET_FRAMES` (45 frames = 1.5s after scene start, when audio begins).
+3. **Frame calculation**: Each segment gets a `startFrame` and `endFrame` relative to the scene start. The first segment begins at `AUDIO_OFFSET_FRAMES` (9 frames ≈ 0.3s after scene start, when audio begins). This gap is intentionally tiny so the voice starts almost immediately — critical for short-form retention (抖音前2秒跳出率高).
 4. **Rendering**: The `<Subtitles>` component in `SharedComponents.tsx` renders text at the bottom of the screen with a semi-transparent black background. Text fades in/out smoothly between segments.
 
 The subtitle data is saved to `narration.json` under each scene's `subtitles` field:

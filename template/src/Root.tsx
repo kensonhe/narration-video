@@ -53,8 +53,13 @@ const fontMono = FONT_FAMILIES[theme.fonts.mono];
 // Each scene = padding_before + audio + padding_after
 // =====================================================
 const FPS = 30;
-const PADDING_BEFORE_MS = 1500; // 1.5s visual intro before speech starts
-const PADDING_AFTER_MS = 800;   // 0.8s visual hold after speech ends
+// Keep the pre-speech gap tiny: on 抖音 the first ~2s decide whether a viewer stays,
+// so narration must start almost immediately (声音一开始就说话). The scene visuals still
+// animate in from frame 0 — this only controls when the voice begins. A short gap also
+// tightens pacing across every scene (节奏快). If you ever need a slower, calmer intro
+// (e.g. a long-form documentary), raise this — but for short-form keep it ≤ ~300ms.
+const PADDING_BEFORE_MS = 300;  // ~0.3s before speech starts (was 1500ms)
+const PADDING_AFTER_MS = 500;   // 0.5s visual hold after speech ends (was 800ms)
 
 function calculateSceneFrames() {
   const scenes: Array<{ from: number; duration: number; totalFrames: number }> = [];

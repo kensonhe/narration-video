@@ -641,7 +641,7 @@ export const Subtitles: React.FC<{
   audioOffsetFrames?: number;
   /** Larger sizing + higher safe-zone for portrait (1080×1920). */
   portrait?: boolean;
-}> = ({ subtitles, fontFamily, audioOffsetFrames = 45, portrait = false }) => {
+}> = ({ subtitles, fontFamily, audioOffsetFrames = 9, portrait = false }) => {
   const theme = useTheme();
   const frame = useCurrentFrame();
 

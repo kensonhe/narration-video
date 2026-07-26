@@ -210,7 +210,9 @@ async function main() {
   // Generate subtitle timing for each scene
   console.log(`\n→ Generating subtitle timing...`);
   const FPS = 30;
-  const AUDIO_OFFSET_FRAMES = Math.ceil((1500 / 1000) * FPS); // PADDING_BEFORE_MS = 1500
+  // Must match PADDING_BEFORE_MS in Root.tsx and AUDIO_OFFSET_FRAMES in Video.tsx.
+  // Kept small so speech (and subtitles) start almost immediately for short-form pacing.
+  const AUDIO_OFFSET_FRAMES = Math.ceil((300 / 1000) * FPS); // PADDING_BEFORE_MS = 300
 
   for (const scene of narration.scenes) {
     const audioDurationMs = scene.audioDuration || 12000;

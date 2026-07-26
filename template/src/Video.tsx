@@ -48,8 +48,10 @@ const SCENE_AUDIO_IDS: string[] = [
   // ... matches narration.json scene IDs
 ];
 
-// Audio starts 1.5s (45 frames at 30fps) into each scene
-const AUDIO_OFFSET_FRAMES = 45;
+// Audio starts ~0.3s (9 frames at 30fps) into each scene — narration must begin almost
+// immediately so the first 2s hook lands (抖音前2秒跳出率高). Must match PADDING_BEFORE_MS
+// in Root.tsx and the offset in scripts/generate-audio.ts.
+const AUDIO_OFFSET_FRAMES = 9;
 
 // =====================================================
 // MAIN VIDEO COMPONENT
